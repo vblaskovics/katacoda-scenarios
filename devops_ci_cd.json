@@ -1,0 +1,21 @@
+{
+    "title": "DevOps CI / CD sandboxes",
+    "description": "DevOps CI / CD sandboxes",
+    "courses": [
+      {
+        "course_id": "01-from-zero-to-delivery",
+        "title": "01 From Zero to Delivery",
+        "description": "See how to launch a fully running pipeline from zero"
+      },
+      {
+        "course_id": "02-extend-pipeline",
+        "title": "02 Extend the Pipeline with Code Analysis",
+        "description": "See how to safely integrate a new pipeline activity"
+      },
+      {
+        "course_id": "03-bootstrap-app-pipeline",
+        "title": "03 Bootstrap a New Application Pipeline",
+        "description": "See how to quickly bootstrap a pipeline for a new app"
+      }
+    ]
+}
