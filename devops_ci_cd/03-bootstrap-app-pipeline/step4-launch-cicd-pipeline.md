@@ -1,5 +1,7 @@
 Run `docker-compose up -d`{{execute}} (this may take a few minutes to complete as it pulls other necessary docker images that we will use but not build like we did for Jenkins).
 
+Run `chmod 777 /var/run/docker.sock`{{execute}} In order to work around access problems for docker runtime running inside the Jenkins docker container.
+
 Now click the "CI/CD Pipeline" tab, or follow this link:
 
 https://[[HOST_SUBDOMAIN]]-80-[[KATACODA_HOST]].environments.katacoda.com/

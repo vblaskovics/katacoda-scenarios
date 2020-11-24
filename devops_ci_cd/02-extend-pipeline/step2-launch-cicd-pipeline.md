@@ -4,6 +4,8 @@ This also gives us the assurance that we can, at any moment, recreate our full d
 
 Run `docker-compose up -d`{{execute}} (this may take a few minutes to complete as it pulls the SonarQube docker image).
 
+Run `chmod 777 /var/run/docker.sock`{{execute}} In order to work around access problems for docker runtime running inside the Jenkins docker container.
+
 Now click the "CI/CD Pipeline" tab, or follow this link:
 
 https://[[HOST_SUBDOMAIN]]-80-[[KATACODA_HOST]].environments.katacoda.com/
