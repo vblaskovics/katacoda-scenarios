@@ -1,5 +1,5 @@
 # get scenario materials
-git clone https://github.com/SkeltonThatcher/releasability-book.git
+git clone https://github.com/tjozsa/releasability-book.git
 cp -rf releasability-book/examples/cd-pipeline/demo-add-static-analysis/docker/* .
 rm -rf releasability-book
 
