@@ -10,7 +10,7 @@
       {
         "course_id": "02-extend-pipeline",
         "title": "02 Extend the Pipeline with Code Analysis",
-        "description": "See how to safely integrate a new pipeline activity"
+        "description": "See how to safely integrate a new pipeline activity."
       },
       {
         "course_id": "03-bootstrap-app-pipeline",
