@@ -1,0 +1,11 @@
+{
+  "title": "DevOps Monitoring ELK sandboxes",
+  "description": "DevOps Monitoring ELK sandboxes",
+  "courses": [
+    {
+      "course_id": "01-getting-started-with-elk",
+      "title": "01 Gettin Started with ELK stack",
+      "description": "Learn various components of ELK stack."
+    }
+  ]
+}
