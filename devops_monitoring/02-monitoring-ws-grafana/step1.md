@@ -1,5 +1,10 @@
 ## Start Prometheus
 
+Change directory to 
+```
+cd workshop-prometheus-grafana
+```
+
 ```
 # Starts Prometheus
 docker-compose up -d prometheus
