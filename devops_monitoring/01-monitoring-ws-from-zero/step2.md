@@ -29,7 +29,7 @@ Update `prometheus.yml` config file, to scrape node-exporter metrics every 10 se
 #
 
 global:
-    scrape_interval: 30s
+  scrape_interval: 30s
 
 scrape_configs:
   - job_name: 'node-exporter'
