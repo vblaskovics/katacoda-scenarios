@@ -1,4 +1,4 @@
-git clone --single-branch --branch step2  https://github.com/tjozsa/workshop-prometheus-grafana.git
+git clone  https://github.com/tjozsa/workshop-prometheus-grafana.git
 cd workshop-prometheus-grafana
 cp -rf ../assets/prometheus.yml .
 # rm -rf releasability-book
