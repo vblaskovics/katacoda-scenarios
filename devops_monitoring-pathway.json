@@ -6,6 +6,11 @@
         "course_id": "01-monitoring-ws-from-zero",
         "title": "01 Monitoring Workshop from Zero",
         "description": "Start withouot anything."
+      },
+      {
+        "course_id": "02-monitoring-ws-grafana",
+        "title": "02 Monitoring Workshop from Grafana",
+        "description": "Start with Grafana and preconfigured Prometheus."
       }
     ]
 }
