@@ -1,0 +1,11 @@
+{
+    "title": "DevOps Monitoring sandboxes",
+    "description": "DevOps Monitoring sandboxes",
+    "courses": [
+      {
+        "course_id": "01-monitoring-ws-from-zero",
+        "title": "01 Monitoring Workshop from Zero",
+        "description": "Start withouot anything."
+      }
+    ]
+}
