@@ -2,6 +2,12 @@
 
 `curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"`{{execute}}
 
+`chmod +x ./kubectl`{{execute}}
+
+`sudo mv ./kubectl /usr/local/bin/kubectl`{{execute}}
+
+`kubectl version --client`{{execute}}
+
 `wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash`{{execute}}
 
 ## getting lab sources
@@ -13,8 +19,11 @@
 ## install lab
 
 `./create-k3d-cluster`{{execute}}
+
 `export KUBECONFIG=$(k3d kubeconfig write tns)`{{execute}}
+
 `./install`{{execute}}
+
 `kubectl get pods -A`{{execute}}
 
 ## Access the demo 
