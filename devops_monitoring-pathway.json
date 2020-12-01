@@ -1,16 +1,21 @@
 {
-    "title": "DevOps Monitoring sandboxes",
-    "description": "DevOps Monitoring sandboxes",
-    "courses": [
-      {
-        "course_id": "01-monitoring-ws-from-zero",
-        "title": "01 Monitoring Workshop from Zero",
-        "description": "Start withouot anything."
-      },
-      {
-        "course_id": "02-monitoring-ws-grafana",
-        "title": "02 Monitoring Workshop from Grafana",
-        "description": "Start with Grafana and preconfigured Prometheus."
-      }
-    ]
+  "title": "DevOps Monitoring sandboxes",
+  "description": "DevOps Monitoring sandboxes",
+  "courses": [
+    {
+      "course_id": "01-monitoring-ws-from-zero",
+      "title": "01 Monitoring Workshop from Zero",
+      "description": "Start withouot anything."
+    },
+    {
+      "course_id": "02-monitoring-ws-grafana",
+      "title": "02 Monitoring Workshop from Grafana",
+      "description": "Start with Grafana and preconfigured Prometheus."
+    },
+    {
+      "course_id": "03-monitoring-ws-grafana-loki",
+      "title": "03 Monitoring Workshop from Loki",
+      "description": "Start with Grafana and preconfigured Prometheus with Loki installed"
+    }
+  ]g
 }
