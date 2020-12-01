@@ -3,6 +3,10 @@
 Change directory to 
 `cd workshop-prometheus-grafana`{{execute}}
 
+Install Loki Docker logging driver before starting the compose stack
+
+`docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`{{execute}}
+
 Starte the whole compose stack
 `docker-compose up -d`{{execute}}
 
