@@ -24,16 +24,8 @@
     "showdashboard": true,
     "dashboards": [
       {
-        "name": "Prometheus",
-        "port": 9090
-      },
-      {
-        "name": "Node-Exporter",
-        "port": 9100
-      },
-      {
-        "name": "Grafana",
-        "port": 3000
+        "name": "Demo",
+        "port": 8080
       }
     ],
     "uilayout": "editor-terminal",
