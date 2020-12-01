@@ -1,17 +1,10 @@
 ## Start Prometheus
 
 Change directory to 
-```
-cd workshop-prometheus-grafana
-```
+`cd workshop-prometheus-grafana`{{execute}}
 
-```
-# Starts Prometheus
-docker-compose up -d prometheus
-
-# Starts system metrics exporter
-docker-compose up -d node-exporter
-```
+Starte the whole compose stack
+`docker-compose up -d`{{execute}}
 
 ## Setup Grafana
 
