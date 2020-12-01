@@ -1,5 +1,7 @@
 ## Prerequsites
 
+### kubectl
+
 `curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"`{{execute}}
 
 `chmod +x ./kubectl`{{execute}}
@@ -8,7 +10,24 @@
 
 `kubectl version --client`{{execute}}
 
+### k3d
+
 `wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash`{{execute}}
+
+### Grafana Labs Tanka
+`curl -fSL -o "/usr/local/bin/tk" "https://github.com/grafana/tanka/releases/download/v0.7.1/tk-linux-amd64"`{{execute}}
+
+`chmod a+x "/usr/local/bin/tk"`{{execute}}
+
+`tk --help`{{execute}}
+
+## jsonnet-bundler
+Jsonnet bundler downloads Jsonnet dependencies.
+`curl -fSL -o "/ust/local/bin/jb" "https://github.com/jsonnet-bundler/jsonnet-bundler/releases/download/v0.4.0/jb-linux-amd64`{{execute}}
+
+`chmod a+x "/usr/local/bin/jb"`{{execute}}
+
+`jb --help`{{execute}}
 
 ## getting lab sources
 
