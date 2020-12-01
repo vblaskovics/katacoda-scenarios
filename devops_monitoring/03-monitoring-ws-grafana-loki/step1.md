@@ -11,10 +11,15 @@ Set default logger for each container to be our Loki logger.
 `sudo vi /etc/docker/daemon.json`{{execute}}
 
 ```
-loki/rules-temp
-loki_1                 | level=error ts=2020-12-01T06:39:28.412232851Z caller=mapper.go:42 msg="unable to read rules directory" path=/loki/rules-temp err="open /loki/rules-temp: no such file or directory"
-loki_1                 | level=info ts=2020-12-01T06:39:28.412876324Z caller=module_service.go:58 msg=initialising module=server
-loki_
+{
+    "debug" : true,
+      ... 
+    "log-driver": "loki",
+    "log-opts": {
+        "loki-url": "http://localhost:3100/loki/api/v1/push",
+        "loki-batch-size": "400"
+    }
+}
 ```
 
 Restart docker enavironment
