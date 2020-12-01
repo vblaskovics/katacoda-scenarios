@@ -1,4 +1,4 @@
-## Start Prometheus
+## Prepare Docker-Compose for logging to Loki
 
 Change directory to 
 `cd workshop-prometheus-grafana`{{execute}}
@@ -7,132 +7,36 @@ Install Loki Docker logging driver before starting the compose stack
 
 `docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`{{execute}}
 
-Starte the whole compose stack
+Set default logger for each container to be our Loki logger.
+`sudo vi /etc/docker/daemon.json`{{execute}}
+
+```
+loki/rules-temp
+loki_1                 | level=error ts=2020-12-01T06:39:28.412232851Z caller=mapper.go:42 msg="unable to read rules directory" path=/loki/rules-temp err="open /loki/rules-temp: no such file or directory"
+loki_1                 | level=info ts=2020-12-01T06:39:28.412876324Z caller=module_service.go:58 msg=initialising module=server
+loki_
+```
+
+Restart docker enavironment
+`systemctl restart docker`{{execute}}
+
+Start Docker-Compose Stack
 `docker-compose up -d`{{execute}}
 
-## Setup Grafana
 
-Uncomment grafana in docker-compose.yml and launch it:
+## Explore the new solution
+Play around with the solution...
 
-```
-docker-compose up -d grafana
-```
+Notice that you have a Loki datasource in Explore view.
 
-Open [http://localhost:3000](http://localhost:3000) (user: grep / pass: demo).
-
-Add a new datasource to Grafana.
-
-- Mode: `server`
-- Pointing to http://prometheus:9090
-
-![](imgs/grafana-setup-datasource.png)
-
-## 6 - Hand-made dashboard
-
-Add a new dashboard to Grafana.
-
-### 6.0 - Simple graph
-
-Create a graph showing current memory usage.
-
-<details>
-  <summary>💡 Solution</summary>
-
-  Query: `(node_memory_MemTotal_bytes{} - node_memory_MemFree_bytes{}) / node_memory_MemTotal_bytes{} * 100`
-
-  ![](imgs/grafana-new-metric.png)
-</details>
-
-### 6.1 - Some formatting
-
-Grafana should be displaying graph in %, such as:
-
-![](imgs/grafana-graph-percent.png)
-
-<details>
-  <summary>💡 Solution</summary>
-
-  ![](imgs/grafana-set-unit.png)
-</details>
-
-### 6.2 - CPU load
-
-In the same dashboard, add a new graph for CPU load (1min, 5min, 15min).
-
-Tips: you will need a new metric prefixed by `node_`.
-
-![](imgs/grafana-cpu-load.png)
-
-<details>
-  <summary>💡 Solution</summary>
-
-  ![](imgs/grafana-set-cpu-load-metrics.png)
-</details>
-
-### 6.3 - Disk usage
-
-In the same dashboard, add a new graph for `sda` disk usage (ko written per second).
-
-You will need `rate()` PromQL function: [https://prometheus.io/docs/prometheus/latest/querying/functions/#rate](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate)
-
-![](imgs/grafana-disk-load.png)
-
-<details>
-  <summary>💡 Solution</summary>
-
-  Query:
-  `rate(node_disk_written_bytes_total{device="sda"}[30s])`
-
-</details>
-
-## 7 - Dashboards from community
-
-Let's import a dashboard from Grafana website.
-
-- "Node Exporter Full" dashboard: [https://grafana.com/dashboards/1860](https://grafana.com/dashboards/1860)
-- Or "Node Exporter Server Metrics" dashboard: [https://grafana.com/dashboards/405](https://grafana.com/dashboards/405)
-- Or both ;)
-
-Those dashboards are only compatible with Prometheus data-source and node-exporter.
-
-![](imgs/grafana-community-dash.png)
+## Additional documentation:
+https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/
 
 ## 8 - Monitor services: nginx, postgresql...
 
 ### 8.1 - Export Nginx and PostgreSQL metrics
 
-Uncomment `postgres`, `postgresql-exporter` and `nginx-exporter` services in docker-compose.yml, and launch containers.
-
-```
-docker-compose up -d nginx-exporter
-docker-compose up -d postgres postgresql-exporter
-```
-
-Update Prometheus configuration to scrape Nginx and PostgreSQL exporters.
-
-<details>
-  <summary>💡 Solution</summary>
-
-  ```yml
-scrape_config:
-
-  [...]
-
-  - job_name: 'postgresql-exporter'
-    static_configs:
-      - targets: ['postgresql-exporter:9187']
-
-  - job_name: 'nginx-exporter'
-    static_configs:
-      - targets: ['nginx-exporter:9101']
-  ```
-
-  Then `docker-compose exec prometheus kill -HUP 1`
-</details>
-
-Check everything is working well here: [http://localhost:9090/targets](http://localhost:9090/targets)
-
-Take a look on `/metrics` routes of exporters: [http://localhost:9187/metrics](http://localhost:9187/metrics) + [http://localhost:9101/metrics](http://localhost:9101/metrics)
+We have added a PostgreSQL and an NGINX simple website to your solution.
 
 ### 8.2 - Generate some metrics
 
