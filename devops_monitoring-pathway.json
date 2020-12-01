@@ -16,6 +16,11 @@
       "course_id": "03-monitoring-ws-grafana-loki",
       "title": "03 Monitoring Workshop from Loki",
       "description": "Start with Grafana and preconfigured Prometheus with Loki installed"
+    },
+    {
+      "course_id": "04-monitoring-ws-tanka",
+      "title": "04-monitoring-ws-tanka",
+      "description": "Start with Tanka"
     }
   ]
 }
