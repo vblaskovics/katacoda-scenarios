@@ -23,7 +23,7 @@
 
 ## jsonnet-bundler
 Jsonnet bundler downloads Jsonnet dependencies.
-`curl -fSL -o "/ust/local/bin/jb" "https://github.com/jsonnet-bundler/jsonnet-bundler/releases/download/v0.4.0/jb-linux-amd64`{{execute}}
+`curl -fSL -o "/ust/local/bin/jb" "https://github.com/jsonnet-bundler/jsonnet-bundler/releases/download/v0.4.0/jb-linux-amd64"`{{execute}}
 
 `chmod a+x "/usr/local/bin/jb"`{{execute}}
 
