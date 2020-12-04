@@ -1,13 +1,13 @@
 {
-  "pathwayTitle": "Getting stared with Monitoring",
-  "title": "From Zero",
-  "description": "See how to launch a fully running monitoring system from zero",
+  "pathwayTitle": "DevOps Monitoring sandboxes",
+  "title": "Time to correlate!",
+  "description": "Correlate logs, traces and metrics with Grafana Prometheus and Tempo/Jaeger",
   "time": "20-25 minutes",
   "details": {
     "intro": {
       "courseData": "courseBase.sh",
       "text": "intro.md",
-      "credits": "Tamas Jozsa, https://github.com/samber/workshop-prometheus-grafana"
+      "credits": "Tamas Jozsa"
     },
     "steps": [
       {
@@ -24,8 +24,12 @@
     "showdashboard": true,
     "dashboards": [
       {
-        "name": "Demo",
+        "name": "Hot R.O.D. app",
         "port": 8080
+      },
+      {
+        "name": "Grafana",
+        "port": 3000
       }
     ],
     "uilayout": "editor-terminal",

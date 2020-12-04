@@ -18,9 +18,9 @@
       "description": "Start with Grafana and preconfigured Prometheus with Loki installed"
     },
     {
-      "course_id": "04-monitoring-ws-tanka",
-      "title": "04-monitoring-ws-tanka",
-      "description": "Start with Tanka"
+      "course_id": "04-monitoring-ws-observability-correlation",
+      "title": "Correlate Logs/Traces/Metrics",
+      "description": "Correlate logs, traces and metrics with Grafana Prometheus and Tempo/Jaeger"
     }
   ]
 }
