@@ -1,0 +1,11 @@
+{
+  "title": "DevOps Saltstack sandboxes",
+  "description": "DevOps Saltstack sandboxes",
+  "courses": [
+    {
+      "course_id": "01-getting-started-with-salt",
+      "title": "01-getting-started-with-salt",
+      "description": "01-getting-started-with-salt"
+    }
+  ]
+}

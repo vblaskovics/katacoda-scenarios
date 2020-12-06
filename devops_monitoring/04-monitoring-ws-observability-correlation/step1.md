@@ -51,19 +51,21 @@ Drop down the log line and click the Tempo link to jump directly from logs to tr
 
 Let's add the OpenTelemetry Hot R.O.D. example to our compose environment.
 
-<pre class="file" data-filename="example/compose/docker-compose.loki.yaml" data-target="append">
+<pre class="file" data-filename="tempo/example/compose/docker-compose.loki.yaml" data-target="append">
   hotrod:
     image: jaegertracing/example-hotrod:latest
     ports: 
       - "8080:8080"
     command: ["all"]
     environment:
-      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_HOST=tempo
       # Note: if your application is using Node.js Jaeger Client, you need port 6832,
       #       unless issue https://github.com/jaegertracing/jaeger/issues/1596 is resolved.
-      - JAEGER_AGENT_PORT=6831
-    depends_on:
-      - jaeger
+      - JAEGER_AGENT_PORT=6832
+    logging:
+      driver: loki
+      options:
+        loki-url: 'http://localhost:3100/api/prom/push'
 </pre>
 
 `docker-compose -f docker-compose.loki.yaml up -d`{{execute}}
