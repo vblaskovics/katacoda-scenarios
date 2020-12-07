@@ -1,21 +1,20 @@
-# コーディング規約
+# Coding convention
 ---
-Ansible はコーディングの自由度が高く、様々な書き方で playbook を作成することができます。しかし、この自由度が課題を生み出す場合もあります。それはチームで自動化を進める時です。個人個人が好きなように playbook を作成してしまうと、ある人はタスクに `name` をつけるが、別の人はつけないといった個人の癖も一緒に実装されてしまいます。このように個人ごとに実装内容にバラツキが生じてしまうと、品質を担保するためのコストが増加していきます。
+Ansible has a high degree of coding freedom, and you can create playbooks in various writing styles. However, this degree of freedom can create challenges. It's time for teams to drive automation. If you create a playbook the way you like it, some people will put `name` on the task, but others will not. If the implementation contents vary from person to person in this way, the cost for ensuring quality will increase.
 
-そのためにチームに必要となるのがコーディング規約です。規約を設けることで、チームで共通した記述が可能となりスキルの平準化やレビューコストの低下に繋がります。しかし一方で、規約に準拠しているのか、というチェックも新たに必要となってしまいます。
+That's what the team needs to have coding conventions. By establishing rules, it is possible for teams to write in common, which leads to skill leveling and reduction of review costs. However, on the other hand, it is also necessary to check whether it complies with the rules.
 
-そこで Ansible では規約準拠を自動的に確かめる方法を提供していますので、その使い方について学習してしていきます。
+Therefore, Ansible provides a method to automatically check compliance with the rules, so we will learn how to use it.
 
 ## Ansible Lint
 ---
-Ansible では [ansible-lint](https://github.com/ansible/ansible-lint) というプログラムを提供しています。これは plyabook の静的解析を行い、ルール違反の記述が無いかをチェックできます。チェックするルールはデフォルトでよく使われるものが適用され、自分でルールを定義することもできます。
+Ansible offers a program called [ansible-lint](https://github.com/ansible/ansible-lint). This can do a static analysis of plyabook and check for any mention of rule violations. By default, the rules you check are commonly used, and you can define your own rules.
 
-サンプルとして以下の2つの playbook を準備しています。
+The following two playbooks are prepared as samples.
 
-- `~/working/lint_ok_playbook.yml`
-- `~/working/lint_ng_playbook.yml`
-
-この2つの playbook はどちらも正しく実行でき、`ps -ef` の結果を出力してくれます。試しに2つを実行してください。
+* `~/working/lint_ok_playbook.yml`
+* `~/working/lint_ng_playbook.yml`
+Both of these playbooks run correctly and print the result of `ps -ef`. Try two things.
 
 `cd ~/working`{{execute}}
 
@@ -23,11 +22,11 @@ Ansible では [ansible-lint](https://github.com/ansible/ansible-lint) という
 
 `ansible-playbook lint_ng_playbook.yml`{{execute}}
 
-どちらも正常に実行できたはずです。では、この2つの playbook に `ansible-lint` を適用してみます。
+Both should have run successfully. Now let's apply `ansible-lint` to these two playbooks.
 
-`ansible-lint lint_ok_playbook.yml`{{execute}}
+`ansible-lint lint_ok_playbook.yml` {{execute}}
 
-こちらは正常終了します。
+This ends normally.
 
 `ansible-lint lint_ng_playbook.yml`{{execute}}
 
@@ -38,48 +37,48 @@ Task/Handler: shell set -o pipefail
 ps -ef |grep -v grep
 ```
 
-2つ目のコマンドはエラーになったはずです。
+The second command should have resulted in an error.
 
-ここではエラーコード `[502]` となっていることが確認できます。エラーの概要は `All tasks should be named` となっており、「全てのタスクは name を保つ必要がある」という規約に違反していることがわかります。
+Here you can see that the error code is `[502]`. The summary of the error is `All tasks should be named`, which shows that it violates the convention that" all tasks should keep their name ".
 
-`ansible-lint` がデフォルトでチェックするルールを確認してみましょう。以下のコマンドを実行します。
+Let's check the rules that `ansible-lint` checks by default. Execute the following command.
 
 `ansible-lint -L`{{execute}}
 
-デフォルトで多数の規約が定義されていることが確認できます。これらの規約にはタグが割り当てられており、タグを指定してまとめて適用・除外を設定することができます。
+You can see that many conventions are defined by default. Tags are assigned to these rules, and you can specify tags to set application / exclusion collectively.
 
-タグの一覧を確認を確認するには以下で表示されます。
+To check the list of tags, see below.
 
 `ansible-lint -T`{{execute}}
 
-例えばこの例において、今回の `[502]` に該当するルールを除外してみます。`[502]` はタグ`task` に含まれていますので、以下のように実行することができます。
+For example, in this example, let's exclude the rule that corresponds to this `[502]`. `[502]` is included in the tag `task`, so you can execute it as follows.
 
 `ansible-lint lint_ng_playbook.yml -x task`{{execute}}`
 
-先の実行では `[502]` のチェックでエラーとなっていましたが、今回は除外されたため正常終了しています。
+In the previous execution, the check for `[502]` resulted in an error, but this time it was excluded, so it ended normally.
 
 
-## 標準以外のルールを定義する
+## Define non-standard rules
 ---
-標準のチェック以外にも、プロジェクトや組織独自のルールも定義できます。
+In addition to standard checks, you can also define project and organization-specific rules.
 
-独自ルールは python で定義します。`AnsibleLintRule` というクラスを継承することで簡単にルールが作成できるようになっています。
+Proprietary rules are defined in python. You can easily create rules by inheriting a class called `AnsibleLintRule`.
 
-詳細は[サンプル](https://github.com/ansible/ansible-lint/blob/master/examples/rules/TaskHasTag.py)を確認してください。
+See [Sample](https://github.com/ansible/ansible-lint/blob/master/examples/rules/TaskHasTag.py) for details.
 
-独自ルールには以下のようなものが定義されることになるでしょう。
+The following will be defined in the original rule.
 
-- 自社で禁止している操作(コマンド)が playbook に入り込まないようにする
-  - 例えば、自社で使っているルーターのファームにバグがあり、そのコマンドを実行するとスイッチがハングアップしてしまうコマンドを禁止したい場合
-  - その他のコマンドを実行すると問題が発生するような危険コマンドなど。
+--Prevent operations (commands) prohibited by your company from entering the playbook
+  --For example, if there is a bug in the farm of your router and you want to prohibit the command that causes the switch to hang when you execute that command.
+  --Dangerous commands that cause problems when you execute other commands.
 
 
-## その他のチェックツール
+## Other check tools
 ---
-変数の命名規則や `name` に与える文言のチェックにはより汎用的な LINT ツールである [YAMLLint](https://github.com/adrienverge/yamllint) が利用できます。必要に応じて活用してください。
+A more general LINT tool, [YAMLLint](https://github.com/adrienverge/yamllint), can be used to check variable naming conventions and the wording given to `name`. Please use it as needed.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [lint_ok_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/working/lint_ok_playbook.yml)
-- [lint_ng_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/working/lint_ng_playbook.yml)
+* [lint_ok_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/working/lint_ok_playbook.yml)
+* [lint_ng_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/working/lint_ng_playbook.yml)

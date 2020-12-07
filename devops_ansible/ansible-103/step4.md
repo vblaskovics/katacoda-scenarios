@@ -1,24 +1,24 @@
-# Collections
+#Collections
 ---
-`Collection` は Galaxy の再利用の仕組みを更に一歩進めたものです。複数のロールやカスタムモジュールをまとめて管理し配布することが可能です。Ansible 2.9 以降(2.8から実験的には利用可能)で利用できます。
+`Collection` takes the Galaxy reuse mechanism one step further. It is possible to manage and distribute multiple roles and custom modules together. Available in Ansible 2.9 and later (experimentally available from 2.8).
 
-従来は1ロール1リポジトリで管理していたものを、組織やチームで利用する共通機能をまとめて1リポジトリで管理できるようになります。
+What was previously managed in one role and one repository can now be managed in one repository by collecting common functions used by organizations and teams.
 
-## Collection の利用
+## Use of Collection
 ---
-演習では既に作成済みのサンプルコレクション [https://galaxy.ansible.com/irixjp/sample_collection_hello](https://galaxy.ansible.com/irixjp/sample_collection_hello) を利用します。このコレクション名は `irixjp.sample_collection_hello` です。オリジナルのソースコードは [github](https://github.com/irixjp/ansible-sample-collection-hello) に格納されています。
+In the exercise, we will use the sample collection [https://galaxy.ansible.com/irixjp/sample_collection_hello](https://galaxy.ansible.com/irixjp/sample_collection_hello) that has already been created. The name of this collection is `irixjp.sample_collection_hello`. The original source code is stored on [github](https://github.com/irixjp/ansible-sample-collection-hello).
 
-> Note: コレクション名は `<namespace>.<collection_name>` という形式で表現されます。
+> Note: The collection name is expressed in the format `<namespace>.<Collection_name>`.
 
-このコレクションは以下を含んでいます。
+This collection contains:
 
-- role: hello
-- role: uptime
-- module: sample\_get\_hello
+* -role: hello
+* -role: uptime
+* -module: sample \ _get \ _hello
 
-コレクションを利用するには、`requirements.yml` を作成します。
+To make use of the collection, create `requirements.yml`.
 
-`~/working/collections/requirements.yml` を以下のように編集します。
+Edit `~/working/collections/requirements.yml` as follows.
 
 ```yaml
 ---
@@ -26,15 +26,15 @@ collections:
 - irixjp.sample_collection_hello
 ```
 
-コレクションを取得するには以下を実行します。標準で`~/.ansible/collections/` へコレクションがダウンロードされます。`-p` をつけると保存先を変更でき、`-f` で強制的に最新版に上書きを行います。
+To get the collection: By default, collections are downloaded to `~/.ansible/collections/`. You can change the save destination by adding `-p`, and forcibly overwrite the latest version with` -f`.
 
 `ansible-galaxy collection install -r collections/requirements.yml`{{execute}}
 
-取得したコレクションを利用する playbook を作成します。コレクションへのアクセスは以下の形式で行います。
+Create a playbook that uses the retrieved collection. Access the collection in the following format.
 
 `<namespace>.<collection_name>.<role or module name>`
 
-`~/working/collection_playbook.yml` を以下のように編集します。
+Edit `~/working/collection_playbook.yml` as follows.
 
 ```yaml
 ---
@@ -54,7 +54,9 @@ collections:
     - debug: var=ret
 ```
 
-実行結果を確認します。
+Check the execution result.
+
+`ansible-playbook collection_playbook.yml`{{execute}}
 
 `ansible-playbook collection_playbook.yml`{{execute}}
 
@@ -85,19 +87,19 @@ ok: [node-1] => {
 }
 ```
 
-コレクション内の各ロール、モジュールを呼出していることが確認できます。単体のロールのときと違い、カスタムモジュールを単体で呼び出すことも可能で、更に利便性が向上しています。
+You can see that each role and module in the collection is called. Unlike the case of a single role, it is also possible to call a custom module by itself, further improving convenience.
 
-## 補足情報
+## Supplementary information
 ---
-必要に応じて以下も確認してください。
+Also check the following if necessary.
 
-- より詳細な利用方法: [Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)
-- コレクションを作成する方法: [Developing collections](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html)
+* More detailed usage: [Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)
+* How to create collections: [Developing collections](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html)
 
-コマンドラインでは `ansible-galaxy collection install` をつど実行する必要がありますが、Ansible Tower/AWX では playbook の実行前に自動的に `requirements.yml` からロールをダウンロードする機能がありますので、更新し忘れといった事故を防ぐことが可能です。
+You have to run `ansible-galaxy collection install` every time on the command line, but Ansible Tower / AWX has the ability to automatically download roles from` requirements.yml` before running the playbook, so forget to update. It is possible to prevent such accidents.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [collection_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/collection_playbook.yml)
-- [requirements.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/collections/requirements.yml)
+* [collection_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/collection_playbook.yml)
+* [requirements.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/collections/requirements.yml)

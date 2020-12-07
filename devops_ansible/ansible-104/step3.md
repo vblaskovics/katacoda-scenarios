@@ -1,29 +1,29 @@
-# テストと確認の自動化
+# Automation of testing and verification
 ---
-Ansible ではテストや確認作業を自動化することも可能です。特に大規模なテストや小さくても繰り返し実行されるテストなどの各種確認作業を自動化することで大きな効果が期待できます。
+Ansible can also automate testing and verification tasks. In particular, you can expect great effects by automating various confirmation tasks such as large-scale tests and tests that are repeatedly executed even if they are small.
 
-ここではテストを実行する playbook の作成方法を見ていきます。
+Now let's see how to create a playbook to run the tests.
 
-## テストに使えるモジュール
+## Modules that can be used for testing
 ---
-はじめにテストに使えるモジュールを紹介します。
+First, I will introduce the modules that can be used for testing.
 
-- [shell](https://docs.ansible.com/ansible/latest/modules/shell_module.html) モジュール: 任意のコマンドを実行してその結果を回収します。
-- [uri](https://docs.ansible.com/ansible/latest/modules/uri_module.html) モジュール: 任意のURLにHTTPメソッドを発行します。
-- \*\_command モジュール: 主にネットワーク機器に対して任意のコマンドを発行し、その結果を回収するモジュールです。例 [ios_command](https://docs.ansible.com/ansible/latest/modules/ios_command_module.html) [junos_command](https://docs.ansible.com/ansible/latest/modules/junos_command_module.html) など。
-- \*\_facts/info モジュール: 主に環境の情報を取得するモジュールです。例 [ec2_vol_info_module](https://docs.ansible.com/ansible/latest/modules/ec2_vol_info_module.html) [netapp_e_facts](https://docs.ansible.com/ansible/latest/modules/netapp_e_facts_module.html)
-- [assert](https://docs.ansible.com/ansible/latest/modules/assert_module.html) モジュール: 条件式を評価して真ならば ok を返す。
-- [fail](https://docs.ansible.com/ansible/latest/modules/fail_module.html) モジュール: 条件式を評価して真ならば failed を返す。
-- [template](https://docs.ansible.com/ansible/latest/modules/template_module.html) モジュール: テスト結果を出力するのに用いられます。
+* [shell](https://docs.ansible.com/ansible/latest/modules/shell_module.html) Module: Execute any command and collect the result.
+* [uri](https://docs.ansible.com/ansible/latest/modules/uri_module.html) Module: Issue an HTTP method to any URL.
+  * *_command module: A module that mainly issues arbitrary commands to network devices and collects the results. Example [ios_command](https://docs.ansible.com/ansible/latest/modules/ios_command_module.html) [junos_command](https://docs.ansible.com/ansible/latest/modules/junos_command_module.html) etc. ..
+  * *_facts/info module: This module mainly gets environment information. Example [ec2_vol_info_module](https://docs.ansible.com/ansible/latest/modules/ec2_vol_info_module.html) [netapp_e_facts]https://docs.ansible.com/ansible/latest/modules/netapp_e_facts_module.html)
+* [assert](https://docs.ansible.com/ansible/latest/modules/assert_module.html) Module: Evaluates the conditional expression and returns ok if true.
+* [fail](https://docs.ansible.com/ansible/latest/modules/fail_module.html) Module: Evaluates the conditional expression and returns failed if true.
+* [template](https://docs.ansible.com/ansible/latest/modules/template_module.html) Module: Used to output test results.
 
-> Note: Ansible で構築・変更した環境を、Ansible 自体を使ってテストする場合には、構築に使ったモジュールとは異なるモジュールを使ってテストを行うことが推奨です。例えば、 `copy` モジュールを使って配布したファイルの確認を `shell` モジュールを使って行うなどの方法です。
+> Note: When testing an environment built / modified with Ansible using Ansible itself, it is recommended to test using a module different from the module used for building. For example, you can use the `shell` module to check the files distributed using the` copy` module.
 
 
-## テストの記述方法
+## How to write a test
 ---
-Ansible でのテストはよく使われるパターンがあり、`shell`, `*_command`, `*_facts` で情報を取得し、その結果を `assert`, `fail` で判定します。
+Testing in Ansible has a commonly used pattern: `shell`, `*_command`, `*_facts` to get information and the result to be judged by `assert`, `fail`.
 
-サンプル
+sample
 ```yaml
 - name: get command AAA result
   shell: exec AAA
@@ -35,9 +35,9 @@ Ansible でのテストはよく使われるパターンがあり、`shell`, `*_
       - ret_AAA.rc == 0
 ```
 
-通常 playbook はエラーが発生すると、エラーとなったタスクで停止してしまいます。設定を行う場合はこれで問題はないのですが、テストの場合には途中でテストも止まってしまうことになります。テストはエラーが発生してもしなくても最後まで実行され、全体のテスト項目のうち何件が成功・エラーなのかを把握できる必要があります。このような場合にはテストコマンドを `block` でまとめて `ignore_error` してエラーを無視するように設定します。
+Normally, when an error occurs, the playbook will stop at the task that caused the error. This is not a problem when setting, but in the case of testing, the test will stop in the middle. The test is executed to the end regardless of whether an error occurs or not, and it is necessary to know how many of the entire test items are successful / error. In such cases, group the test commands with `block` and set `ignore_error` to ignore the error.
 
-サンプル
+sample
 ```yaml
 - ignore_errors: yes
   block:
@@ -62,35 +62,35 @@ Ansible でのテストはよく使われるパターンがあり、`shell`, `*_
     - "{{ ret_CCC }}"
 ```
 
-上記のサンプルでは結果を一括してループで判定しています。この方法は便利ですが、`register` 側で簡単に判定できるように情報を出力する必要があります。複雑な条件を設定する場合には、以下のように記述することもできます。
+In the above sample, the results are collectively judged in a loop. This method is convenient, but you need to output the information so that the `register` side can easily determine it. When setting complicated conditions, you can also write as follows.
 
 ```yaml
 - name: check test results
   assert:
     that:
-      - ret_AAA.rc == 0                     # 返り値を判定
-      - ret_BBB.stdout.find("string") != -1 # 出力結果に string が含まれる
-      - ret_CCC.stdout.find("string") == -1 # 出力結果に string が含まれない
+      - ret_AAA.rc == 0                     # Judge the return value
+      - ret_BBB.stdout.find("string") != -1 # Output contains
+      - ret_CCC.stdout.find("string") == -1 # Output does not contain string
 ```
-`assert` の `that` 句では条件を配列として渡すと AND 条件として扱われます。
+In the `that` clause of` assert`, if you pass the condition as an array, it will be treated as an AND condition.
 
 
 
-## テストの作成
+## Creating a test
 ---
-実際にテストを作成してみます。ここで想定するテスト対象は単純な例として httpd サーバーをインストールして起動したサーバーとします。具体的には以下を実行したサーバーに対してテストを行います。
+Let's actually create a test. As a simple example, the test target assumed here is the server on which the httpd server is installed and started. Specifically, we will test the server that has executed the following.
 
 `ansible node-1 -b -m yum -a 'name=httpd state=present'`{{execute}}
 
 `ansible node-1 -b -m systemd -a 'name=httpd state=started enabled=yes'`{{execute}}
 
-上記をテストするために以下の確認を行うこととします。
+To test the above, we will make the following checks.
 
-- パッケージ httpd がインストールされていること
-- プロセス httpd が存在していること(起動していること)
-- サービス httpd が自動起動(enabled)になっていること
+* Package httpd is installed
+* Process httpd exists (starts)
+* Service httpd is automatically started (enabled)
 
-ファイル `~/working/testing_assert_playbook.yml` を以下のように編集します。
+Edit the file `~/working/testing_assert_playbook.yml` as follows:
 ```yaml
 ---
 - name: Test with assert
@@ -140,34 +140,33 @@ Ansible でのテストはよく使われるパターンがあり、`shell`, `*_
           delegate_to: localhost
 ```
 
-- 最初の `ignore_errors` 以下では必要なテストコードを実行し、それぞれの結果を `register` しています。
-- 2つ目の `ignore_errors` では `assert` モジュールで結果の確認を行っています。
-- 最後の `always` でテスト結果のレポートを作成しています。このように指定することで assert が失敗してもレポートが作成されます。
-  - このレポート作成では `copy` モジュールの `content` パラメーターに直接 Jinja2 を記述することで `Markdown` 形式のファイルを作成しています。
-  - `regex_replace` フィルターは正規表現で文字列を置換します。
-    - ここではコマンド中に含まれる `|` を `&#124;` へと置換しています。これは結果をテーブル形式で出力するときに `|` が区切り文字となるため、実行したコマンドに含まれる `|` を別表現(`&#124;`)へと置き換えています。
+* The first `ignore_errors` below runs the required test code and `registers` each result.
+* In the second `ignore_errors`, the result is confirmed by the `assert` module.
+* The last `always` is the test result report. This will cause the report to be created even if the assert fails.
+  * In this report creation, a file in `Markdown` format is created by writing Jinja2 directly in the `content` parameter of the `copy` module.
+  * The `regex_replace` filter replaces strings with regular expressions.
+    * Here, the `|` contained in the command is replaced with `&#124;`. This replaces `|` in the executed command with another expression (`&#124;`) because `|` is the delimiter when outputting the result in table format.
 
-Playbookを実行します。
+Run the playbook.
 
 `cd ~/working`{{execute}}
 
 `ansible-playbook testing_assert_playbook.yml`{{execute}}
 
-このテストは成功するはずです。 `~/working/result_report_node-1.md` というレポートファイルが作成されているはずなので中身を確認してください。
+This test should succeed. A report file called `~/working/result_report_node-1.md` should have been created, so check the contents.
 
-次にテストを失敗させてみます。 httpd プロセスを停止してからテストを実行します。
+Next, let's fail the test. Stop the httpd process before running the test.
 
 `ansible node-1 -b -m systemd -a 'name=httpd state=stopped enabled=yes'`{{execute}}
 
 `ansible-playbook testing_assert_playbook.yml`{{execute}}
 
-こんどは失敗したはずです。レポートがどのようになったのか確認してください。
+This time it should have failed. Check out what the report looks like.
 
 
-このレポートは [pandoc](https://pandoc.org/) などを使うことで html 形式 → pdf と変換できるため、もう少し見た目を整えればそのまま報告書と提出することも可能です。
+This report can be converted from html format to pdf by using [pandoc](https://pandoc.org/) etc., so if you improve the appearance a little more, you can submit it as a report as it is.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [testing_assert_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/testing_assert_playbook.yml)
-
+* [testing_assert_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/testing_assert_playbook.yml)
