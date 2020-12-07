@@ -12,7 +12,7 @@ Execute the following command to prepare the exercise environment. This operatio
 ---
 In this exercise, we will use the following environment. Three servers, `node-1`,` node-2`, and `node-3`, are running, and you can use Ansible to perform various operations on them.
 
-! [image0-1] (https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/kata_env.png "kata_env.png")
+![image0-1](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/kata_env.png "kata_env.png")
 
 ## Supplementary information
 ---
