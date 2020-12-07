@@ -1,38 +1,37 @@
-# Role による部品化
+# Partization by Role
 ---
-これまでは playbook に直接モジュールを列挙してきました。この方法でも Ansible の自動化は可能ですが、実際に Ansible を使っていくと以前の処理を再利用したくなるケースに多々遭遇します。その際に以前のコードをコピー＆ペーストするのは効率が悪いですし、かといって別の playbook 全体を呼び出そうすると `hosts:` に書かれたグループ名の整合性が取れずうまく動作しないことがほとんどです。そこで登場するのが以下の図の `Role` という考え方です。
+So far, we've listed modules directly in the playbook. You can automate Ansible with this method, but when you actually use Ansible, you often encounter cases where you want to reuse the previous process. Copying and pasting the previous code at that time is inefficient, but if you try to call another entire playbook, the group name written in `hosts:` will not be consistent and will not work. Is most of the time. That's where the idea of ​​`Role` in the figure below comes into play.
 
 ![structure.png](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/structure.png)
 
-様々な作業単位で自動化をパーツ化して再利用可能な部品とすることができます。`Role` は完全にインベントリーと切り離されており、様々な playbook から呼び出して利用することが可能です。このような playbook の開発・管理方法を Ansible では [best practice](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html) と呼んでいます。
+Automation can be made into parts that can be reused in various units of work. `Role` is completely separate from the inventory and can be called and used from various playbooks. Ansible calls this kind of playbook development and management method [best practice](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html).
 
-## Role の構造
-`Role` はディレクトリ内に予め決められた構成でファイルを配置して利用します。するとそのディレクトリが `Role` として Ansible から呼び出せるようになります。
+## Role structure
+`Role` is used by arranging files in a directory with a predetermined configuration. The directory can then be called from Ansible as `Role`.
 
-代表的なロール構造を以下に掲載します。
+The typical roll structure is listed below.
 ```
-site.yml        # 呼び出し元のplaybook
-roles/          # playbook と同じ階層の roles ディレクトリに
-                # ロールが格納されていると Ansible が判断します。 
-  your_role/    # your_role という role を格納するディレクトリ
-                # (ディレクトリ名 = role 名となります)
-    tasks/      #
-      main.yml  #  ロールの中で実行するタスクを記述します。
-    handlers/   #
-      main.yml  #  ロールの中で使用するハンドラーを記述します。
-    templates/  #
-      ntp.conf.j2  # ロールで利用するテンプレートを配置します。
-    files/      #
-      bar.txt   #  ロールの中で利用するファイルを配置します。
-      foo.sh    #
-    defaults/   #
-      main.yml  #  ロールの中で利用する変数の一覧と
-                #  デフォルト値を記述します。
-  your_2nd_role/   # your_2nd_role というロールになります。
+site.yml           # Caller's playbook in the roles directory at the same level as 
+roles /            # playbook
+                   # Ansible determines that the role is stored. Directory to store the role 
+  your_role/       # your_role
+                   # (Directory name = role name)
+     tasks/        #
+       main.yml    # Describes the task to be executed in the role.
+     handlers/     #
+       main.yml    # Describes the handler to use in the role.
+     templates/    #
+       ntp.conf.j2 # Place the template used in the role.
+     files/        #
+       bar.txt     # Place the files to be used in the role.
+       foo.sh      #
+     defaults/     #
+       main.yml    # List of variables used in the role
+                   # Describe the default value. 
+  your_2nd_role /   # The next role will be your_2nd_role.
 ```
 
-上記のようなディレクトリ構造を作った時に、`site.yml` では以下のようにロールを呼び出すことができます。
-
+When you create a directory structure like the one above, you can call roles in `site.yml` as follows.
 
 ```yaml
 ---
@@ -45,36 +44,35 @@ roles/          # playbook と同じ階層の roles ディレクトリに
       name: your_2nd_role
 ```
 
-このように `import_role`  `include_role` というモジュールを使ってロールの名前を指定するだけで処理が呼びだせるようになります。この2つのモジュールは両方ともロールを呼出しますが、違いは以下です。
+In this way, you can call the process just by specifying the role name using the module `import_role` `include_role`. Both of these modules call roles, but the differences are:
 
-- [`import_role`](https://docs.ansible.com/ansible/latest/modules/import_role_module.html) playbook の実行前にロールを読み込む（先読み）
-- [`include_role`](https://docs.ansible.com/ansible/latest/modules/include_role_module.html) タスクの実行時にロールが読み込まれる（後読み）
+-[`import_role`](https://docs.ansible.com/ansible/latest/modules/import_role_module.html) Load the role before running the playbook (look ahead)
+-[`include_role`](https://docs.ansible.com/ansible/latest/modules/include_role_module.html) Roles are loaded when the task is executed (look-ahead)
 
-> Note: 現時点でこの2つの使い分けは意識する必要はありません。基本的には `import_role` を使う方が安全でシンプルです。`include_role` は処理によって呼び出すロールを動的に変更するような、複雑な処理を記述する際に利用します。
+> Note: At this point, you don't need to be aware of the difference between the two. Basically, it's safer and simpler to use `import_role`. `include_role` is used to describe complex processes such as dynamically changing the role to be called by the process.
 
-## Role の作成
+## Creating a Role
 ---
-実際にロールを作成してみます。と言っても難しいことはありません。今まで書いた処理を決められたディレクトリに分割していくだけです。
+Let's actually create a role. It's not difficult to say that. All you have to do is divide the processing you have written so far into the specified directories.
 
-今回の演習ではWebサーバーを設定する `web_setup` ロールを作成します。以下のようなディレクトリ構造になります。
+In this exercise, we will create a `web_setup` role that sets up the web server. The directory structure is as follows.
 ```
-role_playbook.yml     # 実際にロールを呼び出す playbook
+role_playbook.yml # playbook that actually calls the role
 roles
-└── web_setup              # ロール名
+└── web_setup # role name
     ├── defaults
-    │   └── main.yml       # 変数のデフォルト値を格納
+    │ └── main.yml # Store default value of variable
     ├── files
-    │   └── httpd.conf     # 配布するファイルを格納
+    │ └── httpd.conf # Store the files to be distributed
     ├── handlers
-    │   └── main.yml       # ハンドラーを定義
+    │ └── main.yml # define handler
     ├── tasks
-    │   └── main.yml       # タスクを記述
+    │ └── main.yml # Describe the task
     └── templates
-        └── index.html.j2  # テンプレートファイルを配置
+        └── index.html.j2 # Place template file
 ```
 
-各ファイルを作成していきます。
-
+Create each file.
 ### `~/working/roles/web_setup/tasks/main.yml`
 
 ```yaml
@@ -103,7 +101,7 @@ roles
     - restart_apache
 ```
 
-ロールには `play` パートを記述する必要はありませんのでタスクのみを列挙していきます。また、ロール内の `templates` `files` ディレクトリは、明示的にパスを指定しなくてもモジュールからファイルを参照できるようになっています。そのため、`copy` と `template` モジュールの `src` にはファイル名しか記述されていません。
+You don't need to write the `play` part in the role, so we'll just list the tasks. Also, the `templates`` files` directory in the role allows modules to reference files without explicitly specifying a path. Therefore, only the file name is described in `src` of the` copy` and `template` modules.
 
 ### `~/working/roles/web_setup/handlers/main.yml`
 
@@ -138,7 +136,7 @@ LANG: JP
 
 ### `~/working/roles/web_setup/files/httpd.conf`
 
-このファイルはサーバー側から取得して、以下のように編集してください。
+Get this file from the server side and edit it as follows.
 
 `cd ~/working/roles/web_setup`{{execute}}
 
@@ -146,7 +144,7 @@ LANG: JP
 
 `ansible node-1 -m fetch -a 'src=/etc/httpd/conf/httpd.conf dest=files/httpd.conf flat=yes'`{{execute}}
 
-ファイルが取得できていることを確認して、以下のようにファイルを書き換えます。
+Confirm that the file has been acquired, and rewrite the file as follows.
 
 `ls -l files/`{{execute}}
 
@@ -158,7 +156,7 @@ ServerAdmin centos_role@localhost
 
 ### `~/working/role_playbook.yml`
 
-実際にロールを呼び出す playbook を作成します。
+Create a playbook that actually calls the role.
 
 ```yaml
 ---
@@ -170,34 +168,36 @@ ServerAdmin centos_role@localhost
         name: web_setup
 ```
 
-### 全体の確認
+### Overall check
 
-作成したロールを確認します。
+Check the role you created.
 
 `cd ~/working`{{execute}}
 
 `tree roles`{{execute}}
 
-以下のような構造になっていれば必要なファイルの準備が整っています。
+If the structure is as follows, the necessary files are ready.
 ```bash
 roles
 └── web_setup
     ├── defaults
-    │   └── main.yml
+    │ └── main.yml
     ├── files
-    │   ├── dummy_file  # ここは無視してください。
-    │   └── httpd.conf
+    │ ├── dummy_file      # Ignore this.
+    │ └── httpd.conf
     ├── handlers
-    │   └── main.yml
+    │ └── main.yml
     ├── tasks
-    │   └── main.yml
+    │ └── main.yml
     └── templates
         └── index.html.j2
 ```
 
-## 実行
+## Run
 ---
-作成した playbook を実行します。
+Run the playbook you created.
+
+`ansible-playbook role_playbook.yml` {{execute}}
 
 `ansible-playbook role_playbook.yml`{{execute}}
 
@@ -230,12 +230,12 @@ changed: [node-1]
 (省略)
 ```
 
-実行に成功したら、ブラウザで各サーバーにアクセスして結果を確認してください。
+If the execution is successful, access each server with a browser and check the result.
 
-ロールを使うことで飛躍的に自動化の再利用性が高まります。これはタスクとインベントリーが完全に切り離されるためです。それと同時に、自動度の高い playbook の記述方法に[best practice](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)という一定のルールを設けることで、「どこに何が定義されているのか」の見通しが良くなり、他のメンバーからも安心してロールを再利用してもらえるようになります。
+The use of rolls dramatically increases the reusability of automation. This is because the task and inventory are completely separated. At the same time, by setting a certain rule called [best practice](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html) in the highly automatic playbook description method, "where and what The outlook for "is it defined?" Will be improved, and other members will be able to reuse roles with peace of mind.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [role_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/role_playbook.yml)
-- [web_setup](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/roles/web_setup)
+* [role_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/role_playbook.yml)
+* [web_setup](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/roles/web_setup)
