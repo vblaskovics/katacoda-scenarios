@@ -1,27 +1,27 @@
-# Ad-Hocコマンドとモジュール
+# Ad-Hoc commands and modules
 ---
-ここでは Ansible における重要な要素である `Module` と、モジュールを実行するための `Ad-hoc コマンド` について学習します。
+Here you will learn about the key elements of Ansible, `Module`, and the` Ad-hoc command` to execute modules.
 
 ![structure.png](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/structure.png)
 
-## モジュールとは
+## What is a module?
 ---
-モジュールとは「インフラ作業でよくある操作を部品化」したものです。Ansible は約3000個のモジュールを標準で内蔵しています。正確な表現ではないですが、「インフラ作業におけるライブラリ集」だと言うこともできるかもしれません。
+A module is a "part of a common operation in infrastructure work". Ansible has about 3000 built-in modules as standard. It's not an exact expression, but it could be called a "library collection for infrastructure work."
 
-モジュールが提供されることで、自動化の記述をシンプルにすることができます。1つの例として、Ansible で提供される `yum` モジュールについて見てみます。
+Modules are provided to simplify the description of automation. As an example, let's take a look at the `yum` module provided by Ansible.
 
-この `yum` モジュールはOSに対してパッケージの管理を行うモジュールです。このモジュールにパラメーターを渡すことでパッケージのインストールや削除を行うことができます。ここで、同じ動作をするシェルスクリプトを記述することを考えてみましょう。
+This `yum` module is a module that manages packages for the OS. You can install or remove packages by passing parameters to this module. Now consider writing a shell script that does the same thing.
 
-最も単純に実装すると以下のようになります。
+The simplest implementation is as follows.
 ```bash
 function yum_install () {
     PKG=$1
     yum install -y ${PKG}
 }
 ```
-> Note: スクリプト内容は動作を説明するためのもので正確ではありません
+> Note: The script content is meant to explain the behavior and is not accurate
 
-実際に利用するにはこのスクリプトでは不十分です。例えば、インストールしようとしたパッケージがすでにインストールされている場合を考慮しなければなりません。すると以下のようになるはずです。
+This script is not enough to actually use it. For example, you should consider the case where the package you are trying to install is already installed. Then it should look like this:
 
 ```bash
 function yum_install () {
@@ -33,9 +33,11 @@ function yum_install () {
     fi
 }
 ```
-> Note: スクリプト内容は動作を説明するためのもので正確ではありません
 
-しかし、まだこれでも不十分です。パッケージが既にインストールされているとして、そのパッケージのバージョンが、いまからインストールするものよりも古い、同じ、新しいといったケースではどうすればよいでしょうか？このケースも考慮するようにスクリプトを拡張しましょう。
+> Note: The script content is meant to explain the behavior and is not accurate
+
+However, this is still not enough. What if a package is already installed and the version of the package is older, the same, or newer than the one you are about to install? Let's extend the script to take this case into account.
+
 
 ```bash
 function yum_install () {
@@ -51,25 +53,26 @@ function yum_install () {
     fi
 }
 ```
-> Note: スクリプト内容は動作を説明するためのもので正確ではありません
 
-このように、パッケージをインストールという単純な動作でも、ゼロから実装しようとすると様々な考慮事項が発生し、それに対応するための実装が必要となっていきます。
+> Note: The script content is meant to explain the behavior and is not accurate
 
-そこで Ansible のモジュールには、あらかじめこのような考慮事項が組み込まれており、ユーザーは細かな制御を実装することなく自動化を利用可能になります。つまり、自動化の記述量を大幅に減らすことができます。
+In this way, even with the simple operation of installing a package, various considerations arise when trying to implement it from scratch, and it is necessary to implement it to deal with it.
 
-## モジュールの一覧
+Therefore, Ansible's modules have these considerations built in in advance, allowing users to take advantage of automation without implementing fine-grained controls. In other words, the amount of automation description can be significantly reduced.
+
+## List of modules
 ---
-Ansible が持つモジュールの一覧は以下の[公式ドキュメント](https://docs.ansible.com/ansible/latest/modules/modules_by_category.html) から確認できます。
+You can check the list of modules that Ansible has from the following [Official Documents] (https://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
 
-別の方法として Ansible がインストールされた環境では、`ansible-doc` というコマンドでも参照することができます。
+Alternatively, in an environment where Ansible is installed, you can also refer to it with the command `ansible-doc`.
 
-インストール済みのモジュールの一覧を表示するには以下のコマンドを実行します。
+To see the list of installed modules, run the following command.
 
 `ansible-doc -l`{{execute}}
 
-> Note: space で進む、b で戻る、q で終了。
+> Note: Enter with space, return with b, end with q.
 
-特定のモジュールのドキュメントを参照するには以下のように実行します。
+To see the documentation for a particular module, do the following:
 
 `ansible-doc yum`{{execute}}
 
@@ -85,28 +88,28 @@ Ansible が持つモジュールの一覧は以下の[公式ドキュメント](
   * note: This module has a corresponding action plugin.
 ```
 
-モジュールのドキュメントでは、モジュールに与えられるパラメーターの説明や、モジュールが実行された後の戻り値、そして実際の利用方法のサンプルが参照できます。
+In the module documentation, you can find a description of the parameters given to the module, the return value after the module is executed, and a sample of how to actually use it.
 
-> Note: モジュールの利用方法のサンプルは非常に参考になります。
+> Note: The sample usage of the module is very helpful.
 
-## Ad-hoc コマンド
+## Ad-hoc command
 ---
-先に紹介したモジュールを1つ呼び出して Ansible に小さな仕事を実行させることができます。この方法を `Ad-hoc コマンド` とよびます。
+You can call one of the modules mentioned above to get Ansible to do a small task. This method is called the `Ad-hoc command`.
 
-コマンドの形式は以下になります。
+The command format is as follows.
 
 ```bash
 $ ansible all -m <module_name> -a '<parameters>'
 ```
 
-- `-m <module_name>`: モジュール名を指定します。
-- `-a <parameters>`: モジュールにわたすパラメーターを指定します。省略可能な場合もあります。
+* `-m <module_name>`: Specify the module name.
+* `-a <parameters>`: Specifies the parameters to pass to the module. It may be optional.
 
-Ad-hoc コマンドを利用して、いくつかのモジュールを実際に動作させてみましょう。
+Let's use the Ad-hoc command to actually get some modules working.
 
 ### ping
 ---
-[`ping`](https://docs.ansible.com/ansible/latest/modules/ping_module.html) モジュールを実行してみましょう。これは Ansible が操作対象のノードに対して「Ansible としての疎通」が可能かどうかを判定するモジュールです。パラメーターは省略可能です。
+[`ping`](https://docs.ansible.com/ansible/latest/modules/ping_module.html) Let's run the module. This is a module that determines whether Ansible can "communicate as Ansible" to the node to be operated. The parameters are optional.
 
 `ansible all -m ping`{{execute}}
 
@@ -133,10 +136,9 @@ node-3 | SUCCESS => {
     "ping": "pong"
 ```
 
-
 ### shell
 ---
-次に、[`shell`](https://docs.ansible.com/ansible/latest/modules/shell_module.html) モジュールを呼び出してみましょう。これは対象のノード上で任意のコマンドを実行し、その結果を回収するコマンドです。
+Next, let's call the [`shell`] (https://docs.ansible.com/ansible/latest/modules/shell_module.html) module. This is a command that executes an arbitrary command on the target node and collects the result.
 
 `ansible all -m shell -a 'hostname'`{{execute}}
 
@@ -151,7 +153,7 @@ node-2 | CHANGED | rc=0 >>
 ip-10-0-0-218.ap-northeast-1.compute.internal
 ```
 
-他にもいくつかのコマンドを実行して結果を確かめてください。
+Run some other commands and see the results.
 
 `ansible all -m shell -a 'uname -a'`{{execute}}
 
@@ -159,35 +161,35 @@ ip-10-0-0-218.ap-northeast-1.compute.internal
 
 `ansible all -m shell -a 'df -h'`{{execute}}
 
-`ansible all -m shell -a 'rpm -qa |grep bash'`{{execute}}
+`ansible all -m shell -a 'rpm -qa | grep bash'`{{execute}}
 
 
 ### yum
 ---
-[`yum`](https://docs.ansible.com/ansible/latest/modules/yum_module.html)はパッケージの操作を行うモジュールです。このモジュールを利用して新しくパッケージをインストールしてみます。
+[`yum`](https://docs.ansible.com/ansible/latest/modules/yum_module.html) is a module that operates packages. Try installing a new package using this module.
 
-今回は screen パッケージをインストールします。まず現在の環境に screen がインストールされていないことを確認します。
+This time install the screen package. First, make sure screen is not installed in your environment.
 
 `ansible all -m shell -a 'which screen'`{{execute}}
 
-このコマンドは screen が存在しないためエラーになるはずです。
+This command should give an error because screen does not exist.
 
-では、 yum モジュールで screen のインストールを行います。
+Now let's install screen with the yum module.
 
 `ansible all -b -m yum -a 'name=screen state=latest'`{{execute}}
 
-- `-b`: become オプション。これは接続先のノードでの操作に root 権限を利用するためのオプションです。パッケージのインストールには root 権限が必要となるため、このオプションをつけています。つけない場合、このコマンドは失敗します。
+* `-b`: become option. This is an option to use root privileges to operate on the node you are connecting to. This option is included because installing the package requires root privileges. If not, this command will fail.
 
-再度、screen コマンドの確認を行うと、今度はパッケージがインストールされたため成功するはずです。
+If you check the screen command again, it should succeed because the package was installed this time.
 
 `ansible all -m shell -a 'which screen'`{{execute}}
 
 ### setup
 ---
-[`setup`](https://docs.ansible.com/ansible/latest/modules/setup_module.html) は対象ノードの情報を取得するモジュールです。取得された情報は `ansible_xxx` という変数名で自動的にアクセス可能となります。
+[`setup`](https://docs.ansible.com/ansible/latest/modules/setup_module.html) is a module to get the information of the target node. The retrieved information will be automatically accessible with the variable name `ansible_xxx`.
 
-出力される情報量が多いため、1台のノードのみに実行します。
+Since the amount of information output is large, execute it on only one node.
 
 `ansible node-1 -m setup`{{execute}}
 
-このように Ansible は様々なモジュールを持ち、これらを使ってノードに対して操作を行ったり、情報収集を行うことが可能です。
+In this way, Ansible has various modules, which can be used to operate on nodes and collect information.
