@@ -1,12 +1,12 @@
-# エラーハンドリング
+#Error handling
 ---
-playbook で一連のタスクをグループ化し、まとめて `when` や `ingore_errors` を適用することができます。ここで登場するのが `block` 句です。また `block` 句にはエラーハンドリングの機能もあり、`block` 内でのエラー に対して `rescue` 句のタスクを実行したり、エラーに関係なく実行する `always` 句が使えます。
+You can group a set of tasks in a playbook and apply `when` or` ingore_errors` together. This is where the `block` clause comes in. The `block` clause also has error handling capabilities, allowing you to use the` always` clause to perform the task of the `rescue` clause for errors within the` block`, or to execute regardless of the error.
 
 ## block
 ---
-`block` 句を用いた playbook は以下のように記述できます。
+A playbook with the `block` clause can be written as:
 
-`~/working/block_playbook.yml` を編集してください。
+Edit `~/working/block_playbook.yml`.
 ```yaml
 ---
 - name: using block statement
@@ -34,13 +34,13 @@ playbook で一連のタスクをグループ化し、まとめて `when` や `i
         - exec_block == 'yes'
 ```
 
-- `block: ~~ when:` ここでは3つのタスクを `block` 句でまとめて、`when` 句で条件をつけています。この `block` 部分は `exec_block == 'yes'` が成立した時にまとめて実行されます。
+--`block: ~~ when:` Here, the three tasks are grouped in the `block` clause and conditional in the` when` clause. This `block` part is executed together when` exec_block =='yes'` is satisfied.
 
-`block_playbook.yml` を `-e 'exec_block=no'` と `yes` の場合で実行結果にどのような違いがあるか見てみましょう。
+Let's see what the difference is in the execution results of `block_playbook.yml` between `-e 'exec_block = no'` and `yes`.
 
 `cd ~/working`{{execute}}
 
-まず、条件が成立しないケースです。
+The first is the case where the conditions are not met.
 
 `ansible-playbook block_playbook.yml -e 'exec_block=no'`{{execute}}
 
@@ -55,7 +55,7 @@ TASK [copy index.html] *******************************
 skipping: [node-1]
 ```
 
-3つのタスクがまとめてスキップされていることがわかります。次に条件が成立するケースです。
+You can see that the three tasks are skipped together. Next is the case where the condition is met.
 
 `ansible-playbook block_playbook.yml -e 'exec_block=yes'`{{execute}}
 
@@ -70,16 +70,16 @@ TASK [copy index.html] *******************************
 ok: [node-1]
 ```
 
-`block` でグループ化された3つのタスクが実行されていることがわかります。
+You can see that the three tasks grouped by `block` are running.
 
-このように、関連するタスクをグループ化することで `when` 句などを使ってまとめて制御することが可能になります。
+By grouping related tasks in this way, it is possible to control them collectively using the `when` clause.
 
 
 ## rescue, always
 ---
-`block` 句では `rescue`, `always` を利用することが可能です。
+You can use `rescue`, `always` in the `block` clause.
 
-`~/working/rescue_playbook.yml` を以下のように作成してください。
+Create `~/working/rescue_playbook.yml` as follows.
 
 ```yaml
 ---
@@ -113,14 +113,14 @@ ok: [node-1]
             msg: "message from always"
 ```
 
-- `block`: メインとなる処理を記述します。
-  - [`assert`](): 判定用のモジュールです。`that` で与えた条件が成立する場合に `ok` となり、条件が成立しない場合は `failed` になります。
-- `rescue`: `block` 内でエラーが発生した場合に実行されます。
-- `always`: 必ず実行したい処理を実行します。
+* `block`: Describes the main process.
+  -[`assert`] (): This is a judgment module. If the condition given by `that` is satisfied, it becomes` ok`, and if the condition is not satisfied, it becomes `failed`.
+* ` rescue`: Executed when an error occurs in `block`.
+* `always`: Execute the process you want to execute.
 
-この playbook は `error_flag` 変数の値が `no` の場合には正常終了し、それ以外ではエラーとなります。
+This playbook will exit normally if the value of the `error_flag` variable is` no`, otherwise an error will occur.
 
-実際に実行して結果を確認します。まず `error_flag=no` として、正常終了させます。
+Actually run it and check the result. First, set `error_flag = no` to terminate normally.
 
 `ansible-playbook rescue_playbook.yml -e 'error_flag=no'`{{execute}}
 
@@ -142,9 +142,9 @@ ok: [node-1] => {
 }
 ```
 
-この場合、`block` 内のタスクが実行され、その後 `always` 内のタスクが実行されています。
+In this case, the task in `block` is running, then the task in` always` is running.
 
-次に、エラーが発生する場合のケースを確認します。
+Next, let's look at the case when an error occurs.
 
 `ansible-playbook rescue_playbook.yml -e 'error_flag=yes'`{{execute}}
 
@@ -181,12 +181,12 @@ ok: [node-1] => {
 }
 ```
 
-ここではまず `block` のタスクが実行されますがエラーが発生します。エラーが発生したため `rescue` の処理が呼び出されています。さらに `rescue` 内でもエラーが発生しますが、 playbook は停止せずに `always` が実行されます。
+Here the task `block` is executed first, but an error occurs. The processing of `rescue` is being called because an error has occurred. I also get an error inside `rescue`, but the playbook does not stop and` always` is executed.
 
-このように、`block`, `rescue`, `always` を使うことで、 playbook 内のエラーハンドリングを行うことが可能となります。典型的な利用シーンとして、`rescue` で失敗時のリカバリ作業を行い、`always` で状態の通知を行うという使い方があります。
+By using `block`,` rescue`, `always` in this way, it is possible to perform error handling in the playbook. A typical usage scene is to use `rescue` to perform recovery work in the event of a failure, and use` always` to notify the status.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [block_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/block_playbook.yml)
-- [rescue_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/rescue_playbook.yml)
+* [block_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/block_playbook.yml)
+* [rescue_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/rescue_playbook.yml)
