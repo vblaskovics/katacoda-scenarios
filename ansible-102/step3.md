@@ -1,10 +1,10 @@
-# ループ、条件式、ハンドラー
+# Loops, conditional expressions, handlers
 ---
-playbook は YAML 形式で表記するため、基本的には作業やパラメーターを「データ」として表現するためのフォーマットになります。しかし、時にはプログラミングとしての表現を用いたほうが簡潔に作業を記述できる場合も多くあります。この演習では、 playbook が持つ「プログラミングとしての機能」をみていきます。
+Since the playbook is written in YAML format, it is basically a format for expressing work and parameters as "data". However, there are many cases where it is easier to describe the work by using expressions as programming. In this exercise, we will look at the "function as programming" of the playbook.
 
-## ループ
+## loop
 ---
-特定のタスクを繰り返し実行する場合に用います。例えば、`apple`, `orange`, `pineapple` の3つOSユーザーを作成する playbook を見てみましょう。ユーザーを追加するには [`user`](https://docs.ansible.com/ansible/latest/modules/user_module.html) モジュールが利用できるので、以下のような playbook が書けます。
+It is used when executing a specific task repeatedly. For example, take a look at a playbook that creates three OS users: `apple`, `orange`, and `pineapple`. To add a user, the [`user`](https://docs.ansible.com/ansible/latest/modules/user_module.html) module is available, so you can write a playbook like this:
 
 ```yaml
 ---
@@ -28,11 +28,11 @@ playbook は YAML 形式で表記するため、基本的には作業やパラ�
         state: present
 ```
 
-この playbook は完全に意図したとおりに3つのユーザーを追加するように動作します。しかし、この方法は同じ記述を何度も繰り返す必要があり冗長です。仮に `user` モジュールの仕様が変わり、パラメーターの与え方が変更されたり、後で作成するユーザーに追加の情報をもたせたいときには、各タスクを全て編集する必要があります。
+This playbook works to add three users exactly as intended. However, this method is verbose because the same description has to be repeated many times. If the specifications of the `user` module change, the way parameters are given changes, or if you want the user you create later to have additional information, you will need to edit each task altogether.
 
-このような繰り返し処理に利用できるのが `loop` 句です。
+The `loop` clause can be used for such iterations.
 
-`~/working/loop_playbook.yml` を以下のように編集してください。
+Edit `~/working/loop_playbook.yml` as follows.
 ```yaml
 ---
 - name: add users by loop
@@ -51,11 +51,12 @@ playbook は YAML 形式で表記するため、基本的には作業やパラ�
       loop: "{{ user_list }}"
 ```
 
-- `vars:` 変数 `user_list` を定義して、apple, orange, pineapple という3つの要素を持つリストを定義しています。
-- `loop: "{{ user_list }}"` タスクに loop句をつけて、パラメーターにリストを与えると、要素の数分だけタスクを繰り返し実行してくれます。
-- `name: "{{ item }}"` item 変数は loop の中でのみ利用できる変数で、ここに取り出された変数が格納されています。つまり、1ループ目には apple 、2ループ目には orange となります。
 
-`loop_playbook.yml` を実行します。
+* The `vars:` variable `user_list` is defined to define a list with three elements: apple, orange and pineapple.
+* `loop: "{{user_list}}" `If you add a loop clause to a task and give a list as a parameter, the task will be executed repeatedly for the number of elements.
+* `name: "{{item}}" `The item variable is a variable that can be used only in the loop, and the extracted variable is stored here. That is, apple in the first loop and orange in the second loop.
+
+Run `loop_playbook.yml`.
 
 `cd ~/working`{{execute}}
 
@@ -74,7 +75,7 @@ changed: [node-1] => (item=pineapple)
 (省略)
 ```
 
-本当にユーザーが追加されたかを確認してみましょう。正しく playbook が記述されていれば、node-1 にユーザーが作成されているはずです。
+Let's see if the user was really added. If the playbook is written correctly, you should have created a user on node-1.
 
 `ansible node-1 -b -m shell -a 'cat /etc/passwd'`{{execute}}
 
@@ -85,7 +86,8 @@ orange:x:1002:1002::/home/orange:/bin/bash
 pineapple:x:1003:1003::/home/pineapple:/bin/bash
 ```
 
-さらに `mango`, `peach` ユーザーを追加したくなったとします。その場合には、どのように playbook を編集すれば良いでしょうか。実際に playbook を編集して再度実行してください。以下のような実行結果となれば正しく記述できています。冪等性が働いていることが確認できるはずです。
+
+Suppose you also want to add `mango`, `peach` users. In that case, how do you edit the playbook? Please actually edit the playbook and try again. If the execution result is as follows, it is described correctly. You should be able to confirm that idempotence is working.
 
 `ansible-playbook loop_playbook.yml`{{execute}}
 
@@ -104,18 +106,18 @@ changed: [node-1] => (item=peach)
 (省略)
 ```
 
-回答例は本ページの末尾に記載されています。
+An example answer can be found at the end of this page.
 
-> Note: この演習では変数 `user_list` を playbook の内部で定義していますが、これを `group_vars` などのファイルに持たせることで、「ユーザーを追加する処理」と「追加されるユーザーのデータ」を分けて管理することが可能になります。
+> Note: In this exercise, the variable `user_list` is defined inside the playbook, but by having this in a file such as` group_vars`, "the process of adding a user" and "data of the user to be added" It becomes possible to manage separately.
 
-ここでは最も単純なループを紹介しましたが、様々なケースでのループ方法が[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html)で紹介されています。状況に応じて使い分けてください。
+I introduced the simplest loop here, but the loop method in various cases is introduced in the [Official Document] (https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html). .. Please use properly according to the situation.
 
 
-## 条件式
+## Conditional expression
 ---
-Ansible の条件式は特定の条件下でタスクを実行「する・しない」を制御するために用いられます。条件の記述には `when` 句を使います。典型的な利用方法として、あるタスクの実行結果を元に、次のタスクを実行する・しないという制御を行うケースです。
+Ansible conditional expressions are used to control whether or not a task is executed under specific conditions. Use the `when` clause to describe the condition. As a typical usage method, it is a case of controlling whether to execute the next task based on the execution result of one task.
 
-実際に以下の`~/working/when_playbook.yml` を書いてみましょう
+Let's actually write the following `~/working/when_playbook.yml`
 ```yaml
 ---
 - name: start httpd if it's stopped
@@ -145,21 +147,21 @@ Ansible の条件式は特定の条件下でタスクを実行「する・しな
         - ret.rc == 1
 ```
 
-この playbook は httpd プロセスの起動状態を確かめ、もしプロセスが存在していなければ起動する、という処理になります。
+This playbook checks the startup status of the httpd process and starts it if the process does not exist.
 
-> Note: 実際には冪等性が働くため、この処理は `service` 部分だけでも同じ効果となりますのであまり意味がありませんが、練習用の題材だと考えてください。
+> Note: Since idempotency actually works, this process has the same effect on the `service` part alone, so it doesn't make much sense, but think of it as a practice subject.
 
-- `register: ret` ここで `ps -ef | grep http[d]` の結果を格納しています。
-- `ignore_errors: yes` タスク内で発生したエラーを無視するオプションです。このコマンドはプロセスが見つからない場合にエラーとなるため、このオプションをつけないとここでタスクが停止します。
-- `changed_when: no` このタスクが `changed` になる条件を記載します。`shell` モジュールは常に `changed` を返しますが、このオプションに `no` を指定すると `ok` を返します。
-- `when:` ここに条件をリスト形式で記載します。もし複数の条件をリストで与えた場合には、AND条件となります。
-  - `- ret.rc == 1` shell モジュールの戻り値である `rc` の値を比較しています。`rc` にはコマンドラインの戻り値が格納されています。つまり、`ps -ef | grep http[d]` でプロセスが「見つからない」場合にはエラーとなり `1` がここに格納されます。
+* `register: ret` Here we store the result of` ps -ef | grep http [d] `.
+* `ignore_errors: yes` This option ignores errors that occur within the task. This command will result in an error if the process cannot be found, so the task will stop here without this option.
+* `changed_when: no` Describes the conditions under which this task becomes` changed`. The `shell` module always returns` changed`, but specifying `no` for this option returns` ok`.
+* `when:` The conditions are listed here. If multiple conditions are given in a list, it will be an AND condition.
+  * `- ret.rc == 1` The value of` rc`, which is the return value of the shell module, is being compared. `rc` contains the command line return value. That is, if a process is "not found" with `ps -ef | grep http [d]`, an error will occur and `1` will be stored here.
 
-playbook を実行する前に、httpd を停止しておきます(これはエラーになる場合がありますが無視してください)
+Stop httpd before running the playbook (this can be an error, but ignore it)
 
 `ansible node-1 -b -m shell -a 'systemctl stop httpd'`{{execute}}
 
-`~/working/when_playbook.yml` を実行します。
+Run `~/working/when_playbook.yml`.
 
 `ansible-playbook when_playbook.yml`{{execute}}
 
@@ -190,9 +192,9 @@ TASK [start httpd (httpd is stopped)] ****************
 changed: [node-1]
 ```
 
-ここでは、httpd の起動タスクが `ret.rc == 1` の条件に当てはまったため実行されています。
+Here, the httpd startup task is running because it meets the condition `ret.rc == 1`.
 
-では、`~/working/when_playbook.yml` を再度実行します。今度は httpd が起動している状態です。
+Now run `~/working/when_playbook.yml` again. This time httpd is running.
 
 `ansible-playbook when_playbook.yml`{{execute}}
 
@@ -228,19 +230,19 @@ TASK [start httpd (httpd is stopped)] ****************
 skipping: [node-1]
 ```
 
-今回の実行では、`ret.rc` の値が `0` となるため、条件に合致せず `skipping` となっています。
+In this execution, the value of `ret.rc` is `0`, so the condition is not met and it is `skipping`.
 
-条件の記述方法などの詳細は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html)に更に詳細な解説があります。
+For details on how to describe conditions, see [Official Documents](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html) for more detailed explanations.
 
-条件式を使うことで、状況に応じて処理をコントロールすることが可能となります。ただし、あまりに複雑な条件を指定してしまうと、デバッグやメンテナンスに難が生じます。可能な限り条件分岐が発生しないように環境側を標準化しておくことが重要です。
+By using a conditional expression, it is possible to control the processing according to the situation. However, if you specify too complicated conditions, it will be difficult to debug and maintain. It is important to standardize the environment side so that conditional branching does not occur as much as possible.
 
-## ハンドラー
+## Handler
 ---
-ハンドラーは `when` 句のような条件式に似た機能ですが、より用途が限定されています。具体的には、特定のタスクが `changed` になった時に、別のタスクを起動するという動作をします。典型的な用途として、ある設定ファイルを更新した時にセットでプロセスを再起動するといったケースが想定されています。
+Handlers are similar to conditional expressions like the `when` clause, but they have more limited uses. Specifically, when a specific task becomes `changed`, another task is started. A typical use is when a configuration file is updated and the process is restarted as a set.
 
-演習では、`httpd.conf` をサーバーに配布して、ファイルが更新されたら `httpd` を再起動するという playbook を作成します。
+The exercise will create a playbook that distributes `httpd.conf` to the server and restarts` httpd` when the files are updated.
 
-まず、配布する `httpd.conf` をサーバーから取得します。
+First, get the `httpd.conf` to distribute from the server.
 
 `ansible node-1 -m fetch -a 'src=/etc/httpd/conf/httpd.conf dest=files/httpd.conf flat=yes'`{{execute}}
 
@@ -263,9 +265,9 @@ total 16
 -rw-r--r-- 1 jupyter jupyter     2 Nov 17 14:35 index.html
 ```
 
-- [`fetch`](https://docs.ansible.com/ansible/latest/modules/fetch_module.html) モジュールはリモートサーバーのファイルをローカルへ取得するモジュールです(`copy` モジュールの逆)
+* [`fetch`](https://docs.ansible.com/ansible/latest/modules/fetch_module.html) A module is a module that fetches files from a remote server locally (the reverse of the` copy` module).
 
-`~/working/handler_playbook.yml` を以下のように編集します。
+Edit `~/working/handler_playbook.yml` as follows.
 ```yaml
 ---
 - name: restart httpd if httpd.conf is changed
@@ -285,14 +287,16 @@ total 16
         state: restarted
 ```
 
-ハンドラーは、`notify` と `handler` の2つから構成されます。
+The handler consists of two parts, `notify` and `handler`.
 
-- `notify:` ハンドラーに対して `nofily` を発信することを宣言し、これ以降に実際に送信するコードを指定します。
-  - `- restart_apache` 送信するコードを指定しています。
-- `handlers:` ハンドラーセクションを宣言し、これ以下に送信されるコードに対応する処理を記載します。
-  `- name: restart_apache`: `notify`の`restart_apache`に対応した名前を定義することで、このタスクがハンドラーとして実行されます。
+* Declare to send `nofily` to the` notify: `handler and specify the code to actually send after that.
+  * `- restart_apache` Specifies the code to send.
+* ` handlers: `Declare a handler section and describe the processing corresponding to the code sent below this.
+  `-name: restart_apache`: This task runs as a handler by defining a name that corresponds to` restart_apache` in `notify`.
 
-`~/working/handler_playbook.yml` を実行します。
+Run `~/working/handler_playbook.yml`.
+
+`ansible-playbook handler_playbook.yml` {{execute}}
 
 `ansible-playbook handler_playbook.yml`{{execute}}
 
@@ -309,16 +313,16 @@ PLAY RECAP *******************************************
 node-1  : ok=2 changed=0 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-この状態では全てのタスクは `ok` となりました。この時点ではサーバーから取得した httpd.conf をそのままサーバーに配布しているためです。そのため `handler` は動きません。
+In this state, all tasks are `ok`. This is because at this point, the httpd.conf obtained from the server is distributed to the server as it is. So `handler` doesn't work.
 
-では、`files/httpd.conf` を編集して、コピーが `changed` となるようにします。以下のように編集してください。
+Now let's edit `files/httpd.conf` so that the copy is` changed`. Please edit as follows.
 ```
 ServerAdmin root@localhost
       ↓
 ServerAdmin centos@localhost
 ```
 
-再度 `~/working/handler_playbook.yml` を実行します。
+Run `~/working/handler_playbook.yml` again.
 
 `ansible-playbook handler_playbook.yml`{{execute}}
 
@@ -338,14 +342,13 @@ PLAY RECAP *******************************************
 node-1 : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-`httpd.conf` を更新したため、`copy` モジュールが `chaged` となりました。すると設定した `notify` が呼び出され `restart_apache` が実行されています。
+The `copy` module is now` chaged` because we updated `httpd.conf`. Then the set `notify` is called and` restart_apache` is executed.
 
-このようにタスクの `changed` をトリガーに、別のタスクを実行する方法がハンドラーになります。
+In this way, the handler is a method of executing another task triggered by the task `changed`.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [loop_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/loop_playbook.yml)
-- [when_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/when_playbook.yml)
-- [handler_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/handler_playbook.yml)
-
+* [loop_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/loop_playbook.yml)
+* [when_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/when_playbook.yml)
+* [handler_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/handler_playbook.yml)
