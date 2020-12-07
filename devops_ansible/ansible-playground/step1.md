@@ -1,4 +1,5 @@
 In order to configure this environment, exec the below command.
+`yum install -y git && git clone https://github.com/irixjp/katacoda-scenarios && cd katacoda-scenarios/master-course-data/assets/tools/`{{execute}}
 
 `bash ./kata_setup.sh`{{execute}}
 
