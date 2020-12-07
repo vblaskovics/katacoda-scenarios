@@ -1,0 +1,11 @@
+{
+  "title": "DevOps ansible sandboxes",
+  "description": "DevOps ansible sandboxes",
+  "courses": [
+    {
+      "course_id": "ansible-101",
+      "title": "ansible-101",
+      "description": "ansible-101"
+    }
+  ]
+}
