@@ -1,12 +1,12 @@
-# Ansible の基礎、インベントリー、認証情報
+# Ansible Basics, Inventory, Credentials
 ---
-Ansible の基本となるインベントリー(inventory)と認証情報(credential)について学習します。これは Ansible を動かす上で最低限準備する3つの情報のうちの2つに該当します。
+Learn about Ansible's basic inventory and credentials. This is two of the three minimum pieces of information you need to get Ansible running.
 
 ![structure.png](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/structure.png)
 
-## 演習環境での Ansible の実行
+## Running Ansible in a practice environment
 ---
-まず以下のコマンドを実行してください。これは Ansible を使って3台の演習ノードのディスク使用量を確認しています。
+First, execute the following command. It uses Ansible to check the disk usage of the three exercise nodes.
 
 `cd ~/`{{execute}}
 
@@ -41,13 +41,13 @@ tmpfs           495M     0  495M   0% /sys/fs/cgroup
 tmpfs            99M     0   99M   0% /run/user/1000
 ```
 
-> Note: 実際の出力内容と上記の出力例の差分は無視してください。重要なのは `df -h` が実行されたということです。
+> Note: Ignore the difference between the actual output content and the above output example. The important thing is that `df -h` was executed.
 
-これで3台のノードからディスク使用量の情報が取得できました。しかし、この3台のノードはどのように決定されたのでしょうか。もちろんこれは演習用に予め設定されているものですが、その情報は Ansible のどこに設定されているか疑問を持つ方もいるはずです。今からその設定について確認していきます。
+Now you can get the disk usage information from the 3 nodes. But how were these three nodes determined? Of course, this is pre-configured for exercises, but you may be wondering where that information is set in Ansible. I will check the settings from now on.
 
 ## ansible.cfg
 ---
-まず以下のコマンドを実行します。
+First, execute the following command.
 
 `ansible --version`{{execute}}
 
@@ -60,45 +60,45 @@ ansible 2.9.0
   python version = 3.6.8 (default, Oct  7 2019, 17:58:22) [GCC 8.2.1 20180905 (Red Hat 8.2.1-3)]
 ```
 
-> Note: 出力内容は環境によって異なる場合があります。
+> Note: The output content may vary depending on the environment.
 
-ansible コマンドに `--version` オプションをつけると、実行環境に関する基本的な情報が出力されます。バージョンや利用している Python のバージョンなどです。ここでは以下の行に注目します。
+If you add the `--version` option to the ansible command, basic information about the execution environment is output. The version and the version of Python you are using. Pay attention to the following lines here.
 
-- `config file = /jupyter/.ansible.cfg`
+* `config file = /jupyter/.ansible.cfg`
 
-これは、このディレクトリで ansible コマンドを実行した際に読み込まれる Ansible の設定ファイルのパスを表示しています。このファイルは Ansible の基本的な挙動を制御するための設定ファイルです。
+It shows the path to the Ansible config file that is loaded when you run the ansible command in this directory. This file is a configuration file for controlling the basic behavior of Ansible.
 
-「このディレクトリで実行したとき」という表現をつけましたが、 Ansible は ansible.cfg を検索する順番が決まっています。詳細は [Ansible Configuration Settings](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file) に記載されております。
+I used the phrase "when run in this directory", but Ansible has a fixed order to search ansible.cfg. Details can be found in [Ansible Configuration Settings](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#the-configuration-file).
 
-簡単に説明すると、ansible.cfg は環境変数で与えられたパス、現在のディレクトリ、ホームディレクトリ、OS全体の共通パスという順序で検索され、今回はホームディレクトリ `~/.ansible.cfg` が最初に見つかるため、このファイルが利用されています。
+Simply put, ansible.cfg is searched in the order given by the environment variables, the current directory, the home directory, and the common path for the entire OS, this time the home directory `~/.ansible.cfg` is the first. This file is being used to find it.
 
-この中身を確認してみましょう。
+Let's check this content.
 
 `cat ~/.ansible.cfg`{{execute}}
 
 ```bash
 [defaults]
-inventory         = inventory
+inventory = inventory
 host_key_checking = False
-force_color       = True
+force_color = True
 
 [ssh_connection]
 ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 ```
 
-いくつかの設定が演習用に設定されています。ここで重要となるのが以下の設定です。
+Some settings are set up for exercises. The following settings are important here.
 
-- `inventory         = inventory`
+* `inventory = inventory`
 
-これは、Ansible が自動化の実行対象を決定する「インベントリー」に関する設定です。
+This is the "inventory" setting that Ansible decides where to perform the automation.
 
-次のこの設定について詳しくみていきましょう。
+Let's take a closer look at this setting below.
 
-## インベントリー
+## Inventory
 ---
-インベントリーは Ansible が自動化の実行対象を決定するための機能です。ファイルの中身を確認してみましょう。設定ファイルでは `inventory = inventory` となっており、ややわかりにくいですが、これは ansible.cfg からの相対パスで `inventory` というファイルが指定されていることを意味しています。
+Inventory is a feature that allows Ansible to determine where to perform automation. Let's check the contents of the file. In the config file, `inventory = inventory` is a bit confusing, but this means that the file` inventory` is specified with a relative path from ansible.cfg.
 
-このファイルの内容を確認してみます。
+Let's check the contents of this file.
 
 
 `cat ~/inventory`{{execute}}
@@ -109,131 +109,131 @@ node-1 ansible_host=3.114.16.114
 node-2 ansible_host=3.114.209.178
 node-3 ansible_host=52.195.15.8
 
-[all:vars]
+[all: vars]
 ansible_user=centos
 ansible_ssh_private_key_file=/jupyter/aitac-automation-keypair.pem
 ```
 
-このインベントリーは `ini` ファイル形式で記述されています。他にも `YAML` 形式や、スクリプトで動的にインベントリーを構成する `ダイナミックインベントリー` という仕組みもサポートされています。詳細は [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) を確認してください。
+This inventory is written in the `ini` file format. There is also support for the `YAML` format and the` dynamic inventory` mechanism, which dynamically configures inventory with scripts. See [How to build your inventory] (https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) for more information.
 
-このインベントリーファイルは以下のルールで記述されています。
+This inventory file is described by the following rules.
 
-- `node-1` `node-2` のように1行1ノードで情報を記述します。
-  - ノード行は `ノードの識別子(node-1)`、ノードに与える`ホスト変数(複数可) (ansible_host=xxxx)` から構成されます。
-  - `node-1` の部分にはIPアドレスやFQDNを指定することも可能です。
-- `[web]` でホストのグループを作ることができます。ここでは `web` というグループが作られます。
-  - グループ名は `all` と `localhost` 以外の名前を自由に使用できます。
-    - 例) `[web]` `[ap]` `[db]` などシステムをグループ分けする目的で使用されます。
-- `[all:vars]` では、`all` というグループに対して `グループ変数` を定義しています。
-  - `all` は特別なグループで、インベントリーに記述された全ノードを指し示すグループです。
-  - ここで与えられている、 `ansible_user` `ansible_ssh_private_key_file` は特別な変数で、各ノードへのログインに使われるユーザー名とSSH秘密鍵のパスを示しています。
-    - `ansible_xxxx` という[マジック変数](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html)で、Ansible の挙動を制御したり、Ansible が自動的に取得する環境情報など特別な値が格納されています。詳細は変数の項目で解説します。
+* Write information in one node per line, such as `node-1` `node-2`.
+  * The node line consists of `node identifier (node-1)` and `host variable (s) given to the node (ansible_host = xxxx)`.
+  * You can also specify the IP address or FQDN in the `node-1` part.
+* You can create a group of hosts with `[web]`. Here, a group called `web` is created.
+  * You can use any group name other than `all` and `localhost`.
+    * Example: `[web]` `[ap]` `[db]` is used for the purpose of grouping systems.
+* `[all: vars]` defines a `group variable` for the group` all`.
+  * `all` is a special group that points to all the nodes listed in the inventory.
+  * The `ansible_user` `ansible_ssh_private_key_file` given here is a special variable that indicates the username and SSH private key path used to log in to each node.
+    * You can control the behavior of Ansible with [magic variable](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html) called `ansible_xxxx`, environment information that Ansible automatically acquires, etc. Contains special values. Details will be explained in the variable section.
 
-実際にこのインベントリーを利用して定義されたノードの対して Ansible を実行してみます。以下のコマンドを実行してください。
+Let's actually run Ansible on the defined nodes using this inventory. Execute the following command.
 
 `ansible web -i ~/inventory -m ping -o`{{execute}}
 
 ```bash
-node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
+node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
 ```
 
-このコマンドのオプションの意味は以下になります。
+The options for this command have the following meanings:
 
-- `web`: インベントリー内のグループを指定しています。
-- `-i ~/inventory`: 利用するインベントリーファイルを指定します。
-- `-m ping`: モジュール `ping` を実行します。モジュールに関しての詳細は後述します。
-- `-o`: 出力を1ノード1行にまとめます。
+* `web`: Specifying a group in the inventory.
+* `-i ~/inventory`: Specify the inventory file to use.
+* `-m ping`: Execute the module `ping`. Details about the module will be described later.
+* `-o`: Combine the output into one node and one line.
 
-今回の環境では、 `ansible.cfg` ファイルによって、デフォルトのインベントリーが指定されているため、以下のように `-i ~/inventory` を省略することが可能です。
+In this environment, the `ansible.cfg` file specifies the default inventory, so you can omit` -i ~/inventory` as shown below.
 
 `ansible web -m ping -o`{{execute}}
 
 ```bash
-node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
+node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
 ```
 
-> Note: 以降の演習では、上記のようにインベントリーの指定は省略します。
+> Note: In the following exercises, we will omit specifying the inventory as described above.
 
-以下のように、グループ名の代わりにノード名を指定することも可能です。
+You can also specify the node name instead of the group name, as shown below.
 
 `ansible node-1 -m ping -o`{{execute}}
 
 ```bash
-node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
+node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
 ```
 
-複数のノードを指定することも可能です。
+It is also possible to specify multiple nodes.
 
 `ansible node-1,node-3 -m ping -o`{{execute}}
 
 ```bash
-node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
+node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
 ```
 
-特別なグループである `all` を指定してみます。`all` はインベントリーに含まれる全てのノードを対象とします。今回のインベントリーは `all` と `web` のグループが同じものを指しているため、結果も同じになります。
+Let's specify a special group, `all`. `all` covers all nodes in the inventory. In this inventory, the `all` and` web` groups point to the same thing, so the result is the same.
 
 `ansible all -m ping -o`{{execute}}
 
 ```bash
-node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
-node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"},"changed": false,"ping": "pong"}
+node-1 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
+node-3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "ping": "pong"}
 ```
 
 
-## 認証情報
+## Authentication information
 ---
-上記のインベントリーの確認では、3台のノードに対して `ping` モジュールを実行しました。このモジュールは実際にノードに対してログインを行い、Ansible が実行可能な状態かを調べています。このときにログインに使われる Credential (認証情報) について見ていきます。
+In the inventory check above, we ran the `ping` module on three nodes. This module actually logs in to the node and checks if Ansible is ready to run. Let's take a look at the Credentials used to log in at this time.
 
-今回の演習環境では、先に見たインベントリーの中で認証情報が指定されています。以下が抜粋となります。
+In this exercise environment, the credentials are specified in the inventory we saw earlier. The following is an excerpt.
 
 ```bash
-[all:vars]
-ansible_user=centos
-ansible_ssh_private_key_file=/jupyter/aitac-automation-keypair.pem
+[all: vars]
+ansible_user = centos
+ansible_ssh_private_key_file = /jupyter/aitac-automation-keypair.pem
 ```
 
-ここでは、全てのグループに対する変数として `[all:vars]` を定義し、そこで認証に利用する変数を定義しています。
+Here, `[all: vars]` is defined as a variable for all groups, and the variable used for authentication is defined there.
 
-- `ansible_user`: Ansible がログインに利用するユーザー名を指定する。
-- `ansible_ssh_private_key_file`: Ansible がログインに利用する秘密鍵を指定する。
+* ` ansible_user`: Specify the user name that Ansible uses to log in.
+* ` ansible_ssh_private_key_file`: Specify the private key that Ansible uses to log in.
 
-今回の演習では秘密鍵を用いていますが、ログインにパスワードを指定することも可能です。
+Although the private key is used in this exercise, it is possible to specify a password for login.
 
-- `ansible_password`: Ansible がログインに使用するパスワードを指定する。
+* `ansible_password`: Specifies the password that Ansible uses to log in.
 
-この他にも認証情報を与える方法がいくつか提供されいます。代表的なものとしてコマンドラインのオプションとして与える方法があります。
+There are several other ways to give credentials. A typical method is to give it as a command line option.
 
 `ansible all -u centos --private-key ~/aitac-automation-keypair.pem -m ping`{{execute}}
 
-- `-u centos`: ログインに使用するユーザー名を指定できます。
-- `--private-key`: ログインに使用する秘密鍵を指定できます。
+* `-u centos`: You can specify the user name to use for login.
+* `-- private-key`: You can specify the private key to use for login.
 
-パスワードを使用する方法もあります。以下がサンプルになります。
+You can also use a password. The following is a sample.
 
 ```bash
 $ ansible all -u centos -k -m ping
-SSH password:  ← ここでパスワード入力を求められる
+SSH password: ← You will be prompted to enter the password here
 node-1 | FAILED! => {
-    "msg": "to use the 'ssh' connection type with passwords, you must install the sshpass program"
+    "msg": "to use the'ssh' connection type with passwords, you must install the sshpass program"
 }
 node-2 | FAILED! => {
-    "msg": "to use the 'ssh' connection type with passwords, you must install the sshpass program"
+    "msg": "to use the'ssh' connection type with passwords, you must install the sshpass program"
 }
 node-3 | FAILED! => {
-    "msg": "to use the 'ssh' connection type with passwords, you must install the sshpass program"
+    "msg": "to use the'ssh' connection type with passwords, you must install the sshpass program"
 }
 ```
 
-> Note: 演習環境はパスワードログインが許可されていないため、実際に実行してもこの手順は失敗します。
+> Note: The exercise environment does not allow password login, so this step will fail if you do.
 
-- `-k`: コマンド実行時に、パスワード入力のプロンプトを出す。
+* `-k`: Prompt for password when executing command.
 
-Ansible に認証情報を渡す仕組みは、他にもいくつかの方法があります。本演習では最もベーシックな手段(変数で直接指定)を用いていますが、実際に本番で利用する際には、認証情報をどう扱うかは事前に熟慮が必要です。
+There are several other ways to pass credentials to Ansible. This exercise uses the most basic method (directly specified by a variable), but when actually using it in production, it is necessary to carefully consider how to handle the authentication information.
 
-一般的には、[Ansible Tower](https://www.ansible.com/products/tower) や [AWX](https://github.com/ansible/awx) 等の自動化プラットフォームソフトウェアと組み合わせ使う方法がよく採用されます。
+In general, how to use it in combination with automation platform software such as [Ansible Tower](https://www.ansible.com/products/tower) and [AWX](https://github.com/ansible/awx) Is often adopted.
