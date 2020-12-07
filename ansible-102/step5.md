@@ -1,17 +1,17 @@
-# テンプレート
+# template
 ---
-Ansible はテンプレート機能を備えており、動的なファイル作成が可能です。テンプレートエンジンとしては [`jinja2`](https://palletsprojects.com/p/jinja/) を利用しています。
+Ansible has a template function, which enables dynamic file creation. [`Jinja2`](https://palletsprojects.com/p/jinja/) is used as the template engine.
 
-テンプレートはとても汎用性の高い機能で、様々な状況で活用できます。アプリ用のコンフィグファイルを動的に生成して配布したり、各ノードから収集した情報を元にレポートを作成することが可能です。
+Templates are a very versatile feature and can be used in a variety of situations. It is possible to dynamically generate and distribute the configuration file for the application, and create a report based on the information collected from each node.
 
 ## Jinja2 
 ---
-テンプレートを利用するには2つの要素が必要になります。
+Two elements are required to use the template.
 
-- テンプレートファイル: jinja2 形式の表現が埋め込まれたファイルで、一般的に j2 拡張子を付加します。
-- [`template`](https://docs.ansible.com/ansible/latest/modules/template_module.html) モジュール: コピーモジュールに似ています。src にテンプレートファイルを指定し、dest に配置先を指定すると、テンプレートファイルをコピーする際に、jinja2 部分を処理してからファイルをコピーします。
+--Template file: A file with an embedded jinja2 format representation, typically with a j2 extension.
+-[`template`](https://docs.ansible.com/ansible/latest/modules/template_module.html) Module: Similar to a copy module. If you specify the template file in src and the location in dest, when copying the template file, the jinja2 part is processed before copying the file.
 
-実際に作成します。`~/working/templates/index.html.j2` ファイルを作成し、中身を以下となるように編集してください。このファイルが `jinja2` テンプレートファイルになります。
+Actually create. Create a `~/working/templates/index.html.j2` file and edit the contents so that it is as follows. This file will be the `jinja2` template file.
 
 ```jinja2
 <html><body>
@@ -25,12 +25,12 @@ Ansible はテンプレート機能を備えており、動的なファイル作
 </body></html>
 ```
 
-このファイルは一見すると単純な HTML ファイルに見えますが、`{{ }}` や `{% %}` で囲われた部分が存在しています。この部分がテンプレートエンジンにより展開される `Jinja2` 表現に該当します。
+At first glance, this file looks like a simple HTML file, but there are parts enclosed by `{{}}` and `{%%}`. This part corresponds to the `Jinja2` representation expanded by the template engine.
 
-- `{{ }}` 内の変数を評価し、値をカッコの場所に埋め込みます。
-- `{% %}` には制御文を埋め込むことができます。
+--Evaluate the variables in `{{}}` and embed the values in parentheses.
+--You can embed control statements in `{%%}`.
 
-詳細な解説を行う前に、まず `~/working/template_playbook.yml` を作成して、実際にテンプレートを動かしてみましょう。以下のように `template_playbook.yml` を編集してください。
+Before giving a detailed explanation, let's first create `~/working/template_playbook.yml` and actually move the template. Edit `template_playbook.yml` as follows.
 
 ```yaml
 ---
@@ -55,9 +55,9 @@ Ansible はテンプレート機能を備えており、動的なファイル作
         dest: /var/www/html/index.html
 ```
 
-- `template:` テンプレートモジュールを呼び出しています。
+* `template: `Calling the template module.
 
-ではこの playbook を動かしてみます。
+Let's move this playbook.
 
 `cd ~/working`{{execute}}
 
@@ -72,11 +72,11 @@ changed: [node-1]
 (省略)
 ```
 
-どのような結果になったかを確認してみましょう。以下のコマンドを実行してください。
+Let's see what the result is. Execute the following command.
 
 `ansible web -m uri -a 'url=http://localhost/ return_content=yes'`{{execute}}
 
-このコマンドは [`uri`](https://docs.ansible.com/ansible/latest/modules/uri_module.html) モジュールという HTTPリクエストを発行するモジュールを利用しています。このモジュールを使って、それぞれのノード上から `http://localhost/` へアクセスしてコンテンツを取得しています。
+This command makes use of a module that issues HTTP requests called the [`uri`](https://docs.ansible.com/ansible/latest/modules/uri_module.html) module. This module is used to access `http://localhost/ from each node to get the content.
 
 ```bash
 node-1 | SUCCESS => {
@@ -101,31 +101,31 @@ node-3 | SUCCESS => {
 }
 ```
 
-`content` キーに取得した `index.html` の内容が格納されています。この内容を確認すると、テンプレートファイル内の `{{ inventory_hostname }}` の部分はホスト名に置き換えられ、`{% if LANG == "JP" %}` の部分には「Konnichiwa!」となっていることが確認できます。
+The contents of the obtained `index.html` are stored in the `content` key. If you check this content, the `{{inventory_hostname}}` part in the template file will be replaced with the host name, and the `{% if LANG ==" JP "%}` part will be "Konnichiwa!" You can confirm that it is.
 
-では、条件を変えて `LANG == "JP"` が成立しない場合にはどうなるか確認してください。
+Now, change the conditions and check what happens if `LANG ==" JP "` does not hold.
 
 `ansible-playbook template_playbook.yml -e 'LANG=EN'`{{execute}}
 
 `ansible web -m uri -a 'url=http://localhost/ return_content=yes'`{{execute}}
 
-今度の実行では、「Hello!」と挿入されたことが確認できるはずです。
+In the next run, you should see that "Hello!" Was inserted.
 
-> Note: ブラウザでも各ノードにアクセスして確認してください。
+> Note: Please also access each node with a browser to check.
 
-このようにテンプレートを使うことで、動的にファイルの生成を行うことが可能になります。この機能はとても応用範囲が広く、設定ファイルの自動生成や設定報告書の自動作成など様々な場面で活用できます。
+By using the template in this way, it is possible to dynamically generate files. This function has a very wide range of applications and can be used in various situations such as automatic generation of configuration files and automatic creation of configuration reports.
 
 
 ## Filter
 ---
-Jinja2 の機能の一つで [`filter`](https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html) があります。これは `{{ }}` で変数を展開する際に利用でき、変数の値を簡易的に加工することができます。この機能は playbook 内でも利用可能です。
+One of the features of Jinja2 is [`filter`] (https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html). This can be used when expanding a variable with `{{}}`, and the value of the variable can be easily processed. This feature is also available within the playbook.
 
-フィルターを利用するには `{{ var_name | filter_name }}` という形式で利用します。いつくか例をみてみましょう。
+To use the filter, use the format `{{var_name | filter_name}}`. Let's look at some examples.
 
 
-### default フィルター
+### default filter
 
-変数に値が入っていない場合に、初期値を設定してくれるフィルターです。
+It is a filter that sets the initial value when the variable does not contain a value.
 
 `ansible node-1 -m debug -a 'msg={{ hoge | default("abc") }}'`{{execute}}
 
@@ -135,9 +135,9 @@ node-1 | SUCCESS => {
 }
 ```
 
-### upper/lower フィルター
+### upper / lower filter
 
-文字列を大文字・小文字に変換するフィルターです。
+A filter that converts a character string to uppercase or lowercase.
 
 `ansible node-1 -e 'str=abc' -m debug -a 'msg="{{ str | upper }}"'`{{execute}}
 
@@ -147,9 +147,9 @@ node-1 | SUCCESS => {
 }
 ```
 
-### min/max フィルター
+### min / max filter
 
-リストから最小・最大値を取り出すフィルターです。
+A filter that extracts the minimum and maximum values from the list.
 
 `ansible node-1 -m debug -a 'msg="{{ [5, 1, 10] | min }}"'`{{execute}}
 
@@ -167,9 +167,9 @@ node-1 | SUCCESS => {
 }
 ```
 
-他にも多数のフィルターが実装されていますので、状況に応じて使い分けることでより簡単に playbook が作成できるようになります。
+Many other filters are implemented, so you can create a playbook more easily by using them properly according to the situation.
 
-## 演習の解答
+## Exercise answer
 ---
-- [template_html_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/block_playbook.yml)
-- [index.html.j2](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/templates/index.html.j2)
+* [template_html_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/block_playbook.yml)
+* [index.html.j2](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/templates/index.html.j2)
