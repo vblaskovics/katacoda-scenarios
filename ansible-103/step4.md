@@ -56,7 +56,7 @@ Edit `~/working/collection_playbook.yml` as follows.
 
 Check the execution result.
 
-`ansible-playbook collection_playbook.yml` {{execute}}
+`ansible-playbook collection_playbook.yml`{{execute}}
 
 `ansible-playbook collection_playbook.yml`{{execute}}
 
