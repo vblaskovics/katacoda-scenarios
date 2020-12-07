@@ -12,7 +12,7 @@ else
 fi
 
 # This is workaround for https://github.com/irixjp/katacoda-scenarios/issues/6.
-cd ~/katacoda-scenarios/master-course-data/assets/
+cd ~/katacoda-scenarios/devops_saltstack/master-course-data/assets/
 cp -a tools/kata_prepare.yml ~/
 cp -a tools/.ansible.cfg ~/
 cp -a working/ ~/working/

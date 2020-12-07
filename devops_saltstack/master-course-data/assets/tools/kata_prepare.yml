@@ -6,11 +6,11 @@
     image_name: irixjp/katacoda:latest
     docker_network_name: "mynet"
     target_containers:
-      - name: node-1
+      - name: salt
         port: 8081
-      - name: node-2
+      - name: minion-1
         port: 8082
-      - name: node-3
+      - name: minion-2
         port: 8083
     keypair_path: /root/automation-keypair.pem
     inventory_path: /root/inventory

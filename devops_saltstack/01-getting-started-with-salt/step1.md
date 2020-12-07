@@ -4,7 +4,7 @@ Prepare the exercise environment.
 ---
 Execute the following command to prepare the exercise environment. This operation takes about 1-2 minutes.
 
-`yum install -y git && git clone https://github.com/tjozsa/katacoda-scenarios && cd devops_saltstack/master-course-data/assets/tools/`{{execute}}
+`yum install -y git && git clone https://github.com/tjozsa/katacoda-scenarios && cd katacoda-scenarios/devops_saltstack/master-course-data/assets/tools/`{{execute}}
 
 `bash ./kata_setup.sh`{{execute}}
 
