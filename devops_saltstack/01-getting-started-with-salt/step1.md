@@ -1,19 +1,23 @@
-## Install Ansible
+Prepare the exercise environment.
 
-There are a ton of ways to install Ansible. The way I like to do this is to use Python3 pypi CLI called `pip`
+## preparation work
+---
+Execute the following command to prepare the exercise environment. This operation takes about 1-2 minutes.
 
-`pip install ansible`{{execute}}
+`yum install -y git && git clone https://github.com/tjozsa/katacoda-scenarios && cd katacoda-scenarios/devops_salttack/assets/tools/`{{execute}}
 
-What this will do is install "All things Ansible".
+`bash ./kata_setup.sh`{{execute}}
 
-## Test Ansible Installation
+## Environmental overview
+---
+In this exercise, we will use the following environment. Three servers, `node-1`,` node-2`, and `node-3`, are running, and you can use Ansible to perform various operations on them.
 
-The way I like to test if it all workted out correctly is to see if the `ansible` command is available on the $PATH environment variable:
+![image0-1](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/kata_env.png "kata_env.png")
 
-`ansible --version`{{execute}}
+## Supplementary information
+---
+At the top of the terminal there are tabs called `node-1`,` node-2`. Click here to connect to port 80 on each server. Now that nothing is running on each node, clicking it does nothing, but we will use this tab in the exercise.
 
-Notice that we get a bunch of status printouts.
+> Note: This port is actually accessing the container, which is in the form of 8081-> node-1: 80, 8082-> node-2: 80.
 
-Another thing to check is all the various commands you get that start with `ansible-`
-
-Type `ansible-` and hit twice the TAB button to reviel all the tools you got as a package
+Click this tab if you were instructed to "access the node in your browser" during the exercise steps.
