@@ -1,20 +1,20 @@
-# Playbookの記述と実行
+# Playbook description and execution
 ---
-先の演習ではモジュールを1つずつ実行しましたが、実際に作業を行う場合はいくつのも手順を連続して実行することになります。このときに使用するのが `playbook` です。playbook には呼出したいモジュールとパラメーターを順番に記述し、一連の手順として連続して実行することができます。
+In the previous exercise, you ran the modules one at a time, but when you actually work, you'll have to run a number of steps in a row. The one used at this time is `playbook`. The modules and parameters you want to call can be described in order in the playbook and executed continuously as a series of steps.
 
-## Playbook の基礎
+## Playbook basics
 ---
-`playbook` は [YAML](https://ja.wikipedia.org/wiki/YAML) 形式で記述します。YAMLに関して重要なポイントを以下に記載します。
+The `playbook` is written in [YAML](https://ja.wikipedia.org/wiki/YAML) format. Here are some important points about YAML:
 
-- YAML はデータを表記するためのテキストフォーマットであること。
-- ファイルの先頭は `---` から始まる
-- インデントが意味を持つ
-  - インデントは `space` で表記する。`tab` ではエラーとなります。
-- `-` はリストを表す
-- `key`: `value` で辞書形式となる
-- [json](https://ja.wikipedia.org/wiki/JavaScript_Object_Notation) と相互に変換可能
+* YAML is a text format for representing data.
+* The beginning of the file starts with `---`
+* Indentation has meaning
+  * Indentation is written as `space`. `tab` will result in an error.
+* `-` represents a list
+* `key`: `value` is in dictionary format
+* Can be converted to [json](https://ja.wikipedia.org/wiki/JavaScript_Object_Notation)
 
-以下は playbook のサンプルです。
+Below is a sample playbook.
 ```yaml
 ---
 - hosts: all
@@ -31,7 +31,7 @@
       enabled: yes
 ```
 
-この内容は、json で表記すると以下のようになります。
+This content is as follows when expressed in json.
 
 ```json
 [
@@ -59,17 +59,17 @@
 ]
 ```
 
-## playbook の作成
+## Creating a playbook
 ---
-では実際に playbook を作成します。
+Now let's actually create a playbook.
 
-`~/working/first_playbook.yml` をエディタで開いてください。このファイルには先頭に `---` のみが記載されています。以下の説明に従いこのファイルへ追記を行い、playbook として完成させます。
+Open `~ /working/first_playbook.yml` in an editor. This file contains only `---` at the beginning. Follow the instructions below to add to this file and complete it as a playbook.
 
-ここでは、WEBサーバーを構築する playbook を作成します。
+Here, we will create a playbook that builds a web server.
 
-### play パート
+### play part
 ---
-以下のようにファイルに追記してください。
+Please add to the file as follows.
 
 ```yaml
 ---
@@ -78,16 +78,16 @@
   become: yes
 ```
 
-ここで記述した内容な以下になります。
-- `name:`: ここには、この playbook で行う処理の概要を記載します。省略可能。日本語を使うことも可能です。
-- `hosts: all`: playbook の実行対象となるグループやノードを指定します。
-- `become: yes`: この playbook では権限昇格を行うことを宣言しています。コマンドラインで与える `-b` と同じ意味です。
+The contents described here are as follows.
+* `name: `: Here is an overview of what this playbook does. Optional. You can also use Japanese.
+* `hosts: all`: Specifies the groups and nodes on which the playbook will be executed.
+* `become: yes`: This playbook declares privilege escalation. It has the same meaning as `-b` given on the command line.
 
-この部分は、playbook 内の `play` パートと呼ばれる部分で全体に関する挙動を宣言します。playパートで指定できる項目の[詳細については公式ドキュメント](https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play) を確認してください。
+This part declares the overall behavior in a part of the playbook called the `play` part. Check the [Official document for details](https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play) of the items that can be specified in the play part.
 
-### task パート
+### task part
 ---
-次に以下を追記します。インデントの階層に注意してください。
+Next, add the following. Pay attention to the indentation hierarchy.
 
 ```yaml
 ---
@@ -107,20 +107,20 @@
       enabled: yes
 ```
 
-ここで追記した内容は `task` パートと呼ばれる部分になり、実際にこの playbook が行う処理を記述していきます。task パートではモジュールを呼び出す順番に列挙し、必要なパラメーターを与えます。
+The content added here will be the part called the `task` part, and we will describe the processing actually performed by this playbook. The task part lists the modules in the order they are called and gives them the required parameters.
 
-- `tasks:` これ以降が task パートであることを宣言しています。
-- `- name: ...` このタスクの説明を記載しています。省略可能
-- `yum:` `service:` 呼び出すモジュールを指定しています。
-- 以下はモジュールに与えられているパラメーターです。
-  - `name: httpd` `state: latest`
-  - `name: httpd` `state: started` `enabled: yes`
+* `tasks:` Declares that the following is the task part.
+* `- name: ...` Contains a description of this task. Optional
+* ` yum:` `service:` Specifies the module to call.
+* The following are the parameters given to the module.
+  * `name: httpd` `state: latest`
+  * `name: httpd` `state: started`` enabled: yes`
 
-ここで呼び出しているモジュールは以下になります。
-- [`yum`](https://docs.ansible.com/ansible/latest/modules/yum_module.html): httpd パッケージをインストールするために利用します。
-- [`service`](https://docs.ansible.com/ansible/latest/modules/service_module.html): インストールされた httpd を起動し、自動起動の設定を有効にしています。
+The module called here is as follows.
+* [`yum`](https://docs.ansible.com/ansible/latest/modules/yum_module.html): Used to install the httpd package.
+* [`service`](https://docs.ansible.com/ansible/latest/modules/service_module.html): Starts the installed httpd and enables the automatic start setting.
 
-作成した playbook に構文エラーがないかを以下のコマンドで確認できます。
+You can check the created playbook for syntax errors with the following command.
 
 `cd ~/working`{{execute}}
 
@@ -130,7 +130,7 @@
 playbook: first_playbook.yml
 ```
 
-上記はエラー無しのケースです。もしインデントなどに誤りがある場合は以下のようになります。
+The above is the case without error. If there is an error in the indent etc., it will be as follows.
 ```bash
 $ ansible-playbook first_playbook.yml --syntax-check
 
@@ -147,11 +147,12 @@ The offending line appears to be:
  ^ here
 ```
 
-この場合には、playbook のインデントなどがサンプルと同じになっているかを再度確認してください。
 
-## playbook の実行
+In this case, double check that the indentation of the playbook is the same as the sample.
+
+## Run playbook
 ---
-作成した playbook を実行します。playbook の実行には `ansible-playbook` コマンドを利用します。成功すれば httpd サーバーが起動して apache の初期画面が参照できるはずです。
+Run the playbook you created. Use the `ansible-playbook` command to run the playbook. If successful, the httpd server should start and you should be able to see the initial apache screen.
 
 `ansible-playbook first_playbook.yml`{{execute}}
 
@@ -179,31 +180,32 @@ node-2  : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 node-3  : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-上記のような出力となれば成功です。node-1,2,3 に対してブラウザでアクセスしてサイトの動作を確認してください。
 
-> Note: katacoda 上で演習をしている場合は、画面上部の `node-1,2,3` をクリックします。
+If the output looks like the above, it is successful. Please access node-1,2,3 with a browser and check the operation of the site.
 
-> Note: Jupyter 上で演習をしている場合は、アクセスするIPアドレスを `~/inventory` で確認し、ブラウザでアクセスしてください。
+> Note: If you are practicing on katacoda, click `node-1,2,3` at the top of the screen.
 
-以下のような画面が表示されれば成功です。
+> Note: If you are practicing on Jupyter, check the IP address to access with `~ / inventory` and access with a browser.
+
+If the following screen is displayed, it is successful.
 
 ![apache_top_page.png](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/apache_top_page.png)
 
 
-## タスクの追加
+## Add task
 ---
-作成した plyabook にサイトのトップページを配布するタスクを追加します。
+Add a task to distribute the top page of the site to the created plyabook.
 
-`~/working/files/index.html` をエディタで開きます。
+Open `~ / working / files / index.html` in an editor.
 
-ファイルを以下のように編集します。
+Edit the file as follows.
 ```html
 <body>
 <h1>Apache is running fine</h1>
 </body>
 ```
 
-さらに `first_playbook.yml` を以下のように編集します。
+Then edit `first_playbook.yml` as follows:
 ```yaml
 ---
 - name: deploy httpd server
@@ -227,7 +229,7 @@ node-3  : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
       dest: /var/www/html/
 ```
 
-編集が完了したら、構文チェックを実施した後に playbook を実行してみましょう。
+After editing, let's run the playbook after performing a syntax check.
 
 
 `ansible-playbook first_playbook.yml --syntax-check`{{execute}}
@@ -263,22 +265,22 @@ node-2  : ok=4 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 node-3  : ok=4 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-正常終了したら再びブラウザで3台のノードへアクセスしてください。正しく playbook が記述され、動作したのならば先程作成した `index.html` の内容が表示されるはずです。
+After normal completion, access the 3 nodes again with a browser. If the playbook is written correctly and it works, you should see the contents of the `index.html` you just created.
 
-## 冪等性(べきとうせい)
+## Idempotence
 ---
-Ansible のモジュールを利用するメリットして、記述量を大幅に減らせるという解説を行いましたが、その他にもメリットがあります。それが `冪等性` です。
+I explained that the amount of description can be significantly reduced as a merit of using the Ansible module, but there are other merits as well. That is `idempotence`.
 
-この演習では `ansible-playbook first_playbook.yml` を2回実行しています。httpd のインストールと起動を行った時、そしてサイトのトップページを追加したときです。つまり、httpd のインストールと起動のタスクは2回実行されています。しかし、2回目の playbook 実行にもエラー等は起きていません。これは Ansible の `冪等性` が機能しているからです。
+In this exercise, you are running `ansible-playbook first_playbook.yml` twice. When I installed and started httpd, and when I added the top page of the site. That is, the httpd installation and startup tasks have been performed twice. However, no error occurred in the second playbook execution. This is because Ansible's `idempotence` is working.
 
-1回目の実行結果と2回目の実行結果を注意深く確認すると、出力結果に違いがあることに気づくはずです。異なる箇所は、それぞれの処理において `changed` と出力されたか、`ok`と出力されたかです。
+If you carefully check the results of the first and second runs, you will notice a difference in the output. The difference is whether each process outputs `changed` or` ok`.
 
-- `changed`: Ansibleが処理を実行した結果、対象ホストの状態が変わった（Ansibleが実際に設定を行った）
-- `ok`: Ansibleは処理を行おうとしたが、既に想定した設定になっているので状態が変わらなかった（Ansibleは設定を行わなかった・行う必要がなかった）
+* `changed`: As a result of Ansible executing the process, the state of the target host has changed (Ansible actually set it)
+* `ok`: Ansible tried to process, but the status did not change because it was already the expected setting (Ansible did not set / did not need to do it)
 
-この動作が Ansible が備える冪等性になります。Ansible は今から行おうとする処理を実行する必要があるのか、無いのかを実行前に判断してくれています。
+This behavior is the idempotency of Ansible. Ansible will tell you if you need to do what you're about to do or not before you do it.
 
-ここで再度この playbook を実行してみましょう。3つのタスクの状態がどのようになるか考えてから実行してください。
+Now let's run this playbook again. Think about what the three tasks will look like before you run them.
 
 `ansible-playbook first_playbook.yml`{{execute}}
 
@@ -311,10 +313,10 @@ node-2  : ok=4 changed=0 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 node-3  : ok=4 changed=0 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-全てのタスクは `ok` となったはずです。playbook 実行時の最後の `PLAY RECAP` 部分を並べてみると結果の差が分かりやすく確認できます。ここでは各ノードにおいて、何個のタスクが `changed` になったのかを確認できます。
+All tasks should be `ok`. You can easily see the difference in the results by arranging the last `PLAY RECAP` parts when running the playbook. Here you can see how many tasks have become `changed` on each node.
 
 
-1回目(タスク2個がchanged)
+1st time (2 tasks changed)
 ```
 PLAY RECAP ******************************************************************
 node-1  : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
@@ -322,7 +324,7 @@ node-2  : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 node-3  : ok=3 changed=2 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-2回目(タスク1個がchanged)
+2nd time (1 task changed)
 ```
 PLAY RECAP ******************************************************************
 node-1  : ok=4 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
@@ -330,7 +332,7 @@ node-2  : ok=4 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 node-3  : ok=4 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-3回目(changedは0)
+3rd time (changed is 0)
 ```
 PLAY RECAP ******************************************************************
 node-1  : ok=4 changed=0 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
@@ -338,16 +340,16 @@ node-2  : ok=4 changed=0 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 node-3  : ok=4 changed=0 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 ```
 
-では、この冪等性は何が嬉しいのかというと、
+So what makes me happy about this idempotence?
 
-- Playbookには「処理の手順ではなく、状態を宣言的に記述できる」→ Playbook＝設定パラメータ＋手順書として扱えるようになる。
-- 仮に複数台のホストに対して実行した処理が途中で失敗しても、最初から流し直せる（設定が成功した部分はスキップされるため）
+* In the playbook, "the state can be described declaratively, not the processing procedure" → Playbook = setting parameter + procedure manual can be handled.
+* Even if the process executed for multiple hosts fails in the middle, it can be restarted from the beginning (because the part where the setting was successful is skipped).
 
-Ansible の各モジュールはこの冪等性を考慮するように作られており、このモジュールを利用することで簡単に、そして安全に自動化を記述することができるようになっています。
+Each Ansible module is designed to take this idempotency into account, and this module makes it easy and safe to write automation.
 
-これがスクリプトの場合、特に再実行においてはスクリプトを頭から流し直していいのか？ダメなのか？等の面倒な考慮点が生まれてしまうことは容易に想像できると思います。
+If this is a script, is it okay to rerun the script, especially when re-running? Is it useless? You can easily imagine that such troublesome points of consideration will be created.
 
-> Note: ただし、Ansibleも全てのモジュールが完全な冪等性を保証しているわけではありません。モジュールの中には shell のように何が実行されるかわからないものや、操作対象（NW系機器やクラウド環境）によっては原理的に冪等性の確保が難しいものも存在しています。こういったモジュールを使う場合は利用者が注意を払う必要があります
+> Note: However, not all modules of Ansible are guaranteed to be completely idempotent. Some modules, such as shells, do not know what will be executed, and some modules are difficult to ensure idempotency in principle depending on the operation target (NW device or cloud environment). Users need to be careful when using these modules
 
-## 演習の解答
-- [first_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/first_playbook.yml)
+## Exercise answer
+-[first_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/first_playbook.yml)
