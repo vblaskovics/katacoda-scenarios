@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/irixjp/katacoda-scenarios.svg?branch=master)](https://travis-ci.org/irixjp/katacoda-scenarios)
 
-#Ansible Welcome to the basic "self-study" course
+# Ansible Welcome to the basic "self-study" course
 
 This course is for quickly learning the basics of Ansible. The following points are explained.
 
