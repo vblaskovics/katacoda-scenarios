@@ -1,26 +1,26 @@
-# 変数
+#Variable
 ---
-変数を利用することで playbook の汎用性を高めることができます。ここでは様々な変数の利用方法を学習します。
+You can increase the versatility of your playbook by using variables. Here you will learn how to use various variables.
 
-## 変数の基礎
+## Variable basics
 ---
-Ansible における変数は以下の特徴を持っています。
+Variables in Ansible have the following characteristics.
 
-- 型がない
-- 全てグルーバル変数（スコープがない）
-- 様々な場所で定義/上書きできる
+* No type
+* All global variables (no scope)
+* Can be defined / overwritten in various places
 
-全てグローバル変数でかつ様々な方法で定義・上書きできるため命名規則などでチーム内での利用方針を定めておくなどの工夫をすると利便性が向上します。
+Since all are global variables and can be defined and overwritten in various ways, it will be more convenient if you devise a usage policy within the team such as naming conventions.
 
-変数がどこで定義できて、どのような優先順位を持っているかは[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable)を参照してください。
+Where variables can be defined and what their priorities are in the [Official Documentation](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable).
 
-この演習では代表的な変数の利用方法について見ていきます。
+In this exercise, we will look at how to use typical variables.
 
-## debug モジュール
+## debug module
 ---
-定義した変数の中身を確認するはに [`debug`](https://docs.ansible.com/ansible/latest/modules/debug_module.html) モジュールが便利です。
+The [`debug`](https://docs.ansible.com/ansible/latest/modules/debug_module.html) module is useful for checking the contents of defined variables.
 
-`~/working/vars_debug_playbook.yml` を以下のように編集してください。
+Edit `~/working/vars_debug_playbook.yml` as follows.
 ```yaml
 ---
 - hosts: node-1
@@ -35,14 +35,14 @@ Ansible における変数は以下の特徴を持っています。
         msg: "This value is {{ vars.ansible_version.full }}"
 ```
 
-- `gather_facts: no` Ansible はデフォルトでタスクの実行前に `setup` モジュールを実行して、操作対象ノードの情報を収集して変数にセットします。この変数を `no` に設定することで情報収集をスキップさせることができます。これは演習を進める上で変数一覧の出力量を抑えて演習を進めやすくするためです(setupモジュールは膨大な情報を収集する)。
-- `- debug:`
-  - `var: vars` var オプションは引数で与えられた変数の内容を表示します。ここでは `vars` という変数を引数として与えています。`vars` は全ての変数が格納された特別な変数です。
-  - `msg: "This value is {{ vars.ansible_version.full }}"` msg オプションは任意の文字列を出力します。この中では `{{ }}` でくくった箇所は変数として展開されます。
-    - 変数内の辞書データは `.keyname` という形で取り出します。
-    - 変数内のリストデータは `[index_number]` という形で取り出します。
+* `gather_facts: no` Ansible by default runs the` setup` module before executing a task to collect information about the node to be operated on and set it in a variable. You can skip information gathering by setting this variable to `no`. This is to reduce the amount of output of the variable list and make it easier to proceed with the exercise (the setup module collects a huge amount of information).
+* `debug:`
+  * `var: vars` The var option displays the contents of the variable given as an argument. Here, a variable called `vars` is given as an argument. `vars` is a special variable that contains all the variables.
+  * `msg: "This value is {{vars.ansible_version.full}}" `The msg option outputs any string. In this, the part enclosed by `{{}}` is expanded as a variable.
+    * The dictionary data in the variable is retrieved in the form of `.keyname`.
+    * The list data in the variable is retrieved in the form `[index_number]`.
 
-`vars_debug_playbook.yml` を実行します。
+Run `vars_debug_playbook.yml`.
 
 `cd ~/working`{{execute}}
 
@@ -54,7 +54,7 @@ PLAY [node-1] ****************************************
 TASK [print all variables] ***************************
 ok: [node-1] => {
     "vars": {
-        (省略)
+        (abridgement)
         "ansible_ssh_private_key_file": "/jupyter/aitac-automation-keypair.pem",
         "ansible_user": "centos",
         "ansible_verbosity": 0,
@@ -65,23 +65,23 @@ ok: [node-1] => {
             "revision": 0,
             "string": "2.9.0"
         },
-        (省略)
+        (abridgement)
 
 TASK [get one variable] ******************************
 ok: [node-1] => {
     "msg": "This value is 2.9.0"
 }
-(省略)
+(abridgement)
 ```
 
-`vars` の内容は Ansible がデフォルトで定義する [マジック変数](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html) が表示されています。
+The contents of `vars` are the [magic variables](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html) defined by Ansible by default.
 
 
-## playbook 内での変数定義
+## Variable definition in playbook
 ---
-では実際に変数の定義を行ってみましょう。
+Now let's actually define the variables.
 
-`~/working/vars_play_playbook.yml` を以下のように編集します。
+Edit `~/working/vars_play_playbook.yml` as follows.
 ```yaml
 ---
 - hosts: node-1
@@ -108,20 +108,24 @@ ok: [node-1] => {
         msg: "{{ play_vars[0].value}} {{ play_vars[1].value }} {{ play_vars[2].value }}"
 ```
 
-- `vars:` play パートに `vars:` セクションを記述すると、その配下で変数が定義できるようになります。
-  - `play_vars:` 変数名です。自由に設定できます。
-    - この変数は値として、3つの要素を持つリストを作成し、その1つずつに`order` `value` というキーを持つ辞書データを作成しています。
-  - `msg: "{{ play_vars[1].order }}"` リストの値を取り出しています。
-  - `msg: "{{ play_vars[0].value}} {{ play_vars[1].value }} {{ play_vars[2].value }}"` この例のように、複数の変数の値を結合して利用することも可能です。
 
-`vars_play_playbook.yml` を実行します。
+* If you write a `vars:` section in the `vars:` play part, you can define variables under it.
+  * `play_vars: `variable name. It can be set freely.
+    * This variable creates a list with three elements as values, and each one creates dictionary data with the key `order` `value`.
+  * `msg: "{{play_vars [1] .order}}"` Retrieving the values in the list.
+  * `msg: "{{play_vars [0] .value}} {{play_vars [1] .value}} {{play_vars [2] .value}}"` Combine the values of multiple variables, as in this example. It is also possible to use it.
 
+Run `vars_play_playbook.yml`.
+
+`cd ~ / working`{{execute}}
+
+`ansible-playbook vars_play_playbook.yml`{{execute}}
 `cd ~/working`{{execute}}
 
 `ansible-playbook vars_play_playbook.yml`{{execute}}
 
 ```bash
-(省略)
+(abridgement)
 TASK [print play_vars] **************
 ok: [node-1] => {
     "play_vars": [
@@ -149,15 +153,52 @@ TASK [join variables] ***************
 ok: [node-1] => {
     "msg": "ansible is fine"
 }
-(省略)
+(abridgement)
 ```
 
+Run `vars_play_playbook.yml` 
 
-## task 内での変数定義
+`cd ~/working`{{execute}}
+
+`ansible-playbook vars_play_playbook.yml`{{execute}}
+
+```bash
+(abridgement)
+TASK [print play_vars] **************
+ok: [node-1] => {
+    "play_vars": [
+        {
+            "order": "1st word",
+            "value": "ansible"
+        },
+        {
+            "order": "2nd word",
+            "value": "is"
+        },
+        {
+            "order": "3rd word",
+            "value": "fine"
+        }
+    ]
+}
+
+TASK [access to the array] **********
+ok: [node-1] => {
+    "msg": "2nd word"
+}
+
+TASK [join variables] ***************
+ok: [node-1] => {
+    "msg": "ansible is fine"
+}
+(abridgement)
+```
+
+Variable definition in ## task
 ---
-1つのタスク内だけで使う変数を定義したり、一時的に上書きを行うことが可能です。
+It is possible to define variables that are used only within one task, and to temporarily overwrite them.
 
-`~/working/vars_task_playbook.yml` を以下のように編集します。
+Edit `~/working/vars_task_playbook.yml` as follows.
 ```yaml
 ---
 - hosts: node-1
@@ -180,12 +221,12 @@ ok: [node-1] => {
         var: task_vars
 ```
 
-`vars_task_playbook.yml` を実行します。
+Run `vars_task_playbook.yml`.
 
-`ansible-playbook vars_task_playbook.yml`{{execute}}
+`ansible-playbook vars_task_playbook.yml` {{execute}}
 
 ```bash
-(省略)
+(abridgement)
 TASK [print task_vars 1] ************
 ok: [node-1] => {
     "task_vars": 100
@@ -202,16 +243,16 @@ ok: [node-1] => {
 }
 ```
 
-タスクの中での `vars:` はそのタスク内でのみ [変数の優先順位](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable) が `play vars` より高いため、上記のような結果となります。
+`Vars:` in a task is only within that task [Variable Priority](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable) is higher than `play vars`, so the result is as above.
 
-では更に優先順位の高い `extra_vars` (コマンドラインから指定する変数) を使うとどうなるか見てみましょう。
+Now let's see what happens when we use the higher priority `extra_vars` (variable specified from the command line).
 
-`extra_vars` を与えるには `vars_task_playbook.yml` に `-e` オプションをつけて実行します。
+To give `extra_vars`, run` vars_task_playbook.yml` with the `-e` option.
 
 `ansible-playbook vars_task_playbook.yml -e 'task_vars=50'`{{execute}}
 
 ```bash
-(省略)
+(abridgement)
 TASK [print task_vars 1] ************
 ok: [node-1] => {
     "task_vars": "50"
@@ -228,63 +269,64 @@ ok: [node-1] => {
 }
 ```
 
-全てのタスクにおいて最も優先順位の高い `extra_vars` の値が用いられています。このように、Ansible では変数を定義した場所によって優先順位が異なるため注意が必要です。
+The highest priority value of `extra_vars` is used for all tasks. As you can see, in Ansible, the priority differs depending on where the variable is defined, so be careful.
 
-## その他の変数定義
+## Other variable definitions
 ---
-その他の変数の定義方法について紹介します。
+Introducing how to define other variables.
 
 
-### set_fact での定義
+### Definition in set_fact
 ---
-[set_fact](https://docs.ansible.com/ansible/latest/modules/set_fact_module.html) モジュールを使って、タスクパートの中で任意の変数を定義することができます。一般的な用途として、1つのタスクの実行結果を受け取り、その値を加工して新たな変数を定義し、その値を後続のタスクで利用する場合があります。
+You can use the [set_fact](https://docs.ansible.com/ansible/latest/modules/set_fact_module.html) module to define any variable in your task part. 
+A common use is to receive the execution result of one task, process its value to define a new variable, and use that value in subsequent tasks.
 
-`set_fact` を使う演習は次のパートで登場します。
+Exercises using `set_fact` will appear in the next part.
 
 
-### host\_vars, group\_vars での定義
+### Definition in host\_vars, group\_vars
 ---
-インベントリーの項目でも解説した変数です。特定のグループやホストに関連付けられる変数を定義することができます。インベントリーファイルに記載する以外にも、実行する playbook と同一ディレクトリに、`gourp_vars` `host_vars` ディレクトリを作成して、そこに `<group_name>.yml`, `<node_name>.yml` ファイルを作成することでグループ、ホスト変数として認識させることができます。
+It is a variable explained in the item of inventory. You can define variables that are associated with a particular group or host. In addition to listing in the inventory file, create a `gourp_vars` `host_vars` directory in the same directory as the playbook you want to run, and create `<group_name>.yml`, `<node_name>.yml` files there. By doing so, it can be recognized as a group or host variable.
 
->Note: この `gourp_vars` `host_vars` というディレクトリ名は Ansible 内で決め打ちされた名前で変えることはできません。
+> Note: This directory name `gourp_vars` `host_vars` cannot be changed with a fixed name within Ansible.
 
-実際にいくつかのホスト変数とグループ変数を定義します。
+It actually defines some host and group variables.
 
-### `~/working/group_vars/all.yml` 
+### `~/working/group_vars/all.yml`
 
-グループ変数を定義します。
-```yaml
+Define a group variable.
+`` `yaml
 ---
 vars_by_group_vars: 1000
-```
+`` ```
 
-### `~/working/host_vars/node-1.yml` 
+### `~ / working / host_vars / node-1.yml`
 
-ホスト変数を定義します。
+Define the host variable.
 ```yaml
 ---
 vars_by_host_vars: 111
 ```
 
-### `~/working/host_vars/node-2.yml`
+### `~ / working / host_vars / node-2.yml`
 
-ホスト変数を定義します。
+Define the host variable.
 ```yaml
 ---
 vars_by_host_vars: 222
 ```
 
-### `~/working/host_vars/node-3.yml`
+### `~ / working / host_vars / node-3.yml`
 
-ホスト変数を定義します。
+Define the host variable.
 ```yaml
 ---
 vars_by_host_vars: 333
 ```
 
-### `~/working/vars_host_group_playbook.yml`
+### `~ / working / vars_host_group_playbook.yml`
 
-これらの変数を利用する playbook を作成します。
+Create a playbook that takes advantage of these variables.
 ```yaml
 ---
 - hosts: all
@@ -307,12 +349,12 @@ vars_by_host_vars: 333
         var: cal_result
 ```
 
-ここまで準備が整ったら `vars_host_group_playbook.yml` を実行します。
+When you're ready, run `vars_host_group_playbook.yml`.
 
 `ansible-playbook vars_host_group_playbook.yml`{{execute}}
 
 ```bash
-(省略)
+(abridgement)
 TASK [print group_vars] ******************************
 ok: [node-1] => {
     "vars_by_group_vars": 1000
@@ -350,17 +392,18 @@ ok: [node-2] => {
 ok: [node-3] => {
     "cal_result": "1333"
 }
-(省略)
+(abridgement)
 ```
 
-このように、同じ変数でグループやホストごとに別々の値を持たせることが可能となります。
+
+In this way, it is possible to have different values ​​for each group or host with the same variable.
 
 
-### register による実行結果の保存
+### Saving execution results by register
 ---
-Ansible のモジュールは実行されると様々な戻り値を返します。playbook の中ではこの戻り値を保存して後続のタスクで利用することができます。その際に利用するのが `register` 句です。`register` に変数名を指定すると、その変数に戻り値を格納します。
+Ansible modules return various return values ​​when executed. You can save this return value in the playbook and use it in subsequent tasks. The `register` clause is used in that case. If you specify a variable name in `register`, the return value is stored in that variable.
 
-`~/working/vars_register_playbook.yml` を以下のように編集します。
+Edit `~/working/vars_register_playbook.yml` as follows.
 ```yaml
 ---
 - hosts: node-1
@@ -386,13 +429,12 @@ Ansible のモジュールは実行されると様々な戻り値を返します
         var: ret
 ```
 
-
-`vars_register_playbook.yml` を実行します。
+Run `vars_register_playbook.yml`.
 
 `ansible-playbook vars_register_playbook.yml`{{execute}}
 
 ```bash
-(省略)
+(abridgement)
 TASK [exec hostname command] *************************
 changed: [node-1]
 
@@ -451,20 +493,19 @@ ok: [node-1] => {
 }
 ```
 
-この例では、まず `shell` モジュールで hostname コマンドを実行した結果を変数 `ret` に格納し、直後の `debug` モジュールで内容を表示しています。次に、[`file`](https://docs.ansible.com/ansible/latest/modules/file_module.html) モジュールを使ってディレクトリを作成し、その戻り値を `ret` に格納しています。そして同じく `debug` モジュールで内容を確認しています。
+In this example, the result of executing the hostname command in the `shell` module is first stored in the variable` ret`, and the contents are displayed in the `debug` module immediately after. Then I use the [`file`](https://docs.ansible.com/ansible/latest/modules/file_module.html) module to create a directory and store its return value in` ret`. .. And also check the contents with the `debug` module.
 
-各モジュールの戻り値が何を返すかはモジュールのドキュメントで確認することができます。
+You can see what the return value of each module returns in the module's documentation.
 
 
-## 演習の解答
+## Exercise answer
 ---
-- [vars_debug_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_debug_playbook.yml)
-- [vars_play_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_play_playbook.yml)
-- [vars_task_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_task_playbook.yml)
-- [vars_host_group_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_host_group_playbook.yml)
-  - [host_vars/node-1.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/host_vars/node-1.yml)
-  - [host_vars/node-2.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/host_vars/node-2.yml)
-  - [host_vars/node-3.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/host_vars/node-3.yml)
-  - [group_vars/all.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/group_vars/all.yml)
-- [vars_register_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_register_playbook.yml)
-
+* [vars_debug_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_debug_playbook.yml)
+* [vars_play_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_play_playbook.yml)
+* [vars_task_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_task_playbook.yml)
+* [vars_host_group_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_host_group_playbook.yml)
+  * [host_vars/node-1.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/host_vars/node-1.yml)
+  * [host_vars/node-2.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/host_vars/node-2.yml)
+  * [host_vars/node-3.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/host_vars/node-3.yml)
+  * [group_vars/all.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/group_vars/all.yml)
+* [vars_register_playbook.yml](https://github.com/irixjp/katacoda-scenarios/blob/master/master-course-data/assets/solutions/vars_register_playbook.yml)
