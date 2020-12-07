@@ -1,23 +1,23 @@
-演習環境の準備を行います。
+Prepare the exercise environment.
 
-## 準備作業
+## preparation work
 ---
-以下のコマンドを実行して演習環境を準備します。この操作は1-2分程度で終わります。
+Execute the following command to prepare the exercise environment. This operation takes about 1-2 minutes.
 
-`yum install -y git && git clone https://github.com/irixjp/katacoda-scenarios && cd katacoda-scenarios/master-course-data/assets/tools/`{{execute}}
+`yum install -y git && git clone https://github.com/irixjp/katacoda-scenarios && cd katacoda-scenarios / master-course-data / assets / tools /` {{execute}}
 
-`bash ./kata_setup.sh`{{execute}}
+`bash ./kata_setup.sh` {{execute}}
 
-## 環境の概要
+## Environmental overview
 ---
-この演習では以下のような環境を利用します。`node-1`, `node-2`, `node-3` という3台のサーバーが起動しており、ここに対して Ansible を使って様々な操作を行っていきます。
+In this exercise, we will use the following environment. Three servers, `node-1`,` node-2`, and `node-3`, are running, and you can use Ansible to perform various operations on them.
 
-![image0-1](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/kata_env.png "kata_env.png")
+! [image0-1] (https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/kata_env.png "kata_env.png")
 
-## 補足事項
+## Supplementary information
 ---
-ターミナルの上部に `node-1`, `node-2` というタブがあります。ここをクリックすると、各サーバーのポート80へ接続されます。今は各ノードで何も起動していないのでクリックしても何も起こりませんが、演習の中でこのタブを使用します。
+At the top of the terminal there are tabs called `node-1`,` node-2`. Click here to connect to port 80 on each server. Now that nothing is running on each node, clicking it does nothing, but we will use this tab in the exercise.
 
-> Note: 実際にこのポートはコンテナにアクセスしており、 8081 -> node-1:80, 8082 -> node-2:80 という形のアクセスになっています。
+> Note: This port is actually accessing the container, which is in the form of 8081-> node-1: 80, 8082-> node-2: 80.
 
-演習のステップで「ブラウザでノードにアクセスしてください」という指示があった場合には、このタブをクリックしてください。
+Click this tab if you were instructed to "access the node in your browser" during the exercise steps.
