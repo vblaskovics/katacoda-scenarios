@@ -42,6 +42,6 @@
     "uimessage2": "\u001b[32mTerminal for Salt Minion\u001b[m\r\n"
   },
   "backend": {
-    "imageid": "ubuntu"
+    "imageid": "centos-vm"
   }
 }
