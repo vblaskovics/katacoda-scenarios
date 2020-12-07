@@ -6,11 +6,11 @@
     image_name: tjozsa/labnode:1.0.0
     docker_network_name: "mynet"
     target_containers:
-      - name: salt
+      - name: salt.example.com
         port: 8081
-      - name: minion-1
+      - name: minion-1.example.com
         port: 8082
-      - name: minion-2
+      - name: minion-2.example.com
         port: 8083
     keypair_path: /root/automation-keypair.pem
     inventory_path: /root/inventory
