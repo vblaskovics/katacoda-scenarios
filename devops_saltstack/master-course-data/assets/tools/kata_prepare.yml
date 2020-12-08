@@ -6,7 +6,7 @@
     image_name: tjozsa/labnode:1.0.0
     docker_network_name: "mynet"
     target_containers:
-      - name: bolt
+      - name: salt
         port: 8081
       - name: target1
         port: 8082

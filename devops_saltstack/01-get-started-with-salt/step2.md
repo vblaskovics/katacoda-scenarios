@@ -1,163 +1,205 @@
-# Log into the Bolt container
-We want to do everything in this container from now on. This is our Puppet Bolt control node.
+# Log into the Solt container
+We want to do everything in this container from now on. This is our SaltStack control node.
 
-`docker exec -it --user centos bolt /bin/bash`{{execute}}
+`docker exec -it --user centos salt /bin/bash`{{execute}}
 
-## Configuring Bolt
-`mkdir ~/Boltdir`{{execute}}
+# Setup Salt server in container salt
 
-`cd ~/Boltdir`{{execute}}
+## add saltstack apt source
+We need to first trust the GPG key of the Saltstack apt source.
 
-`nano bolt.yaml`{{execute}}
+`wget -O - https://repo.saltstack.com/py3/ubuntu/20.04/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -`{{execute}}
 
-Enter the following into the file:
+Edit your apt sources and add SaltStack package source
+
+`sudo nano /etc/apt/sources.list.d/saltstack.list`{{execute}}
+
+Add the following line:
+
+```
+deb http://repo.saltstack.com/py3/ubuntu/20.04/amd64/latest focal main
+```
+
+Type `ctrl+x` then `Y` and enter to save and quit the editor
+
+`sudo apt update`{{execute}}
+
+## Install Salt Server
+`sudo apt-get install salt-master`{{execute}}
+
+## Install Salt Minion
+`sudo apt-get install salt-minion`{{execute}}
+
+## Install SSH package
+`sudo apt-get install salt-ssh`{{execute}}
+
+## Configure the salt container to manage itself via salt minion
+
+First we need to make sure that only one entry is present in the /etc/hosts file for the salt hostname
+
+`sudo nano /etc/host`{{execute}}
+
+```
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+# 172.18.0.2    salt
+172.19.0.2      salt
+```
+Now we need to start the salt server in daemon mode:
+
+`sudo salt-server -d`{{execute}}
+
+Now we can start the salt minion in daemon mode:
+`sudo salt-minon -d`{{execute}}
+
+Salt server needs to approve the minion's key in order to start the communication
+
+`sudo salt-key -A`{{execute}}
+
+## Test your salt setup
+
+`sudo salt '*' test.version`{{execute}}
+
+`sudo salt '*' disk.usage`{{execute}}
+`sudo salt '*' sys.doc`{{execute}}
+`sudo salt '*' cmd.run 'ls -l /etc'`{{execute}}
+`sudo salt '*' pkg.install vim`{{execute}}
+`sudo salt '*' network.interfaces`{{execute}}
+`sudo salt myminion grains.item pythonpath --out=pprint`{{execute}}
+
+## Do the same bootstrapping procedure for target1 and target2
+
+`exit`{{execute}}
+
+`docker exec -it --user centos target1 /bin/bash`{{execute}}
+
+...
+
+`exit`{{execute}}
+
+`docker exec -it --user centos target1 /bin/bash`{{execute}}
+
+...
+
+`exit`{{execute}}
+
+`docker exec -it --user centos salt /bin/bash`{{execute}}
+
+
+`sudo salt '*' test.version`{{execute}}
+
+`sudo salt '*' disk.usage`{{execute}}
+`sudo salt '*' sys.doc`{{execute}}
+`sudo salt '*' cmd.run 'ls -l /etc'`{{execute}}
+`sudo salt '*' pkg.install vim`{{execute}}
+`sudo salt '*' network.interfaces`{{execute}}
+`sudo salt myminion grains.item pythonpath --out=pprint`{{execute}}
+
+## Grains
+
+Salt uses a system called Grains to build up static data about minions. This data includes information about the operating system that is running, CPU architecture and much more. The grains system is used throughout Salt to deliver platform data to many components and to users.
+
+Grains can also be statically set, this makes it easy to assign values to minions for grouping and managing.
+
+A common practice is to assign grains to minions to specify what the role or roles a minion might be. These static grains can be set in the minion configuration file or via the grains.setval function.
+
+## Targetting
+
+Salt allows for minions to be targeted based on a wide range of criteria. The default targeting system uses globular expressions to match minions, hence if there are minions named larry1, larry2, curly1, and curly2, a glob of larry* will match larry1 and larry2, and a glob of *1 will match larry1 and curly1.
+
+Many other targeting systems can be used other than globs, these systems include:
+
+Regular Expressions
+Target using PCRE-compliant regular expressions
+
+Grains
+Target based on grains data: Targeting with Grains
+
+Pillar
+Target based on pillar data: Targeting with Pillar
+
+IP
+Target based on IP address/subnet/range
+
+Compound
+Create logic to target based on multiple targets: Targeting with Compound
+
+Nodegroup
+Target with nodegroups: Targeting with Nodegroup
+
+The concepts of targets are used on the command line with Salt, but also function in many other areas as well, including the state system and the systems used for ACLs and user permissions.
+
+## Passing in arguments
+Many of the functions available accept arguments which can be passed in on the command line:
+
+`sudo salt '*' pkg.install vim`{{execute}}
+
+This example passes the argument vim to the pkg.install function. Since many functions can accept more complex input than just a string, the arguments are parsed through YAML, allowing for more complex data to be sent on the command line:
+
+`sudo salt '*' test.echo 'foo: bar'`{{execute}}
+
+In this case Salt translates the string 'foo: bar' into the dictionary "{'foo': 'bar'}"
+
+## Salt States
+
+Now that the basics are covered the time has come to evaluate States. Salt States, or the State System is the component of Salt made for configuration management.
+
+The state system is already available with a basic Salt setup, no additional configuration is required. States can be set up immediately.
+
+### SLS Formulas
+
+The state system is built on SLS (SaLt State) formulas. These formulas are built out in files on Salt's file server. To make a very basic SLS formula open up a file under /srv/salt named vim.sls. The following state ensures that vim is installed on a system to which that state has been applied.
+
+`sudo nano /srv/salt/vim.sls`{{execute}}
+
 ```yaml
-ssh:
-  host-key-check: false
-  run-as-command:
-    - "sudo"
-    - "-n"
-    - "-u"
+vim:
+  pkg.installed
 ```
-Type `ctrl+x` then `Y` and enter to save and quit the editor
 
-## Create inventory
+Now install vim on the minions by calling the SLS directly:
 
-`nano inventory.yaml`{{execute}}
+`sudo salt '*' state.apply vim`{{execute}}
 
-Enter the following into the file:
+This command will invoke the state system and run the vim SLS.
+
+Now, to beef up the vim SLS formula, a vimrc can be added:
+
+`sudo nano /srv/salt/vim.sls`{{execute}}
 
 ```yaml
-groups:
- - name: all_linux
-   targets:
-    - target1
-    - target2
-   config:
-     ssh:
-       password: password
-```
-Type `ctrl+x` then `Y` and enter to save and quit the editor
+vim:
+  pkg.installed: []
 
-## Simple command execution
-
-`bolt command run "date" --targets all_linux`{{execute}}
-
-And another one just for fun:
-
-You can of course limit which host to run the commands on by selecting just one host
-
-`bolt command run "df -h" --targets target2`{{execute}}
-
-Or listing them:
-
-`bolt command run "df -h" --targets target1,target2`{{execute}}
-
-You can also run commands from a local script:
-
-create a script caled myscript.sh and add some bash script commands to it:
-
-`nano myscript.sh`{{execute}}
-
-```bash
-#!/bin/bash
-date
-df -h
-```
-Type `ctrl+x` then `Y` and enter to save and quit the editor
-
-now run the contents of this script line-by-line on target nodes
-
-`bolt command run @myscript.sh --targets all_linux`{{execute}}
-
-You can upload a file to the targets:
-
-`bolt file upload myscript.sh /home/centos/myscript.sh --targets all_linux`{{execute}}
-
-And download files:
-`bolt file download /etc/ssh/sshd_config sshd_config --targets all_linux`{{execute}}
-
-## bolt plan
-In order to create more complicated and reusable configuration you can create and reuse modules.
-Create the followin strucure in your project:
-
-```
-.
-├── inventory.yaml
-└── modules
-    └── apache
-        ├── files
-        └── plans
-            └── install.yaml
+/etc/vimrc:
+  file.managed:
+    - source: salt://vimrc
+    - mode: 644
+    - user: root
+    - group: root
 ```
 
-`mkdir ~/Boltdir/modules`{{execute}}
+Now the desired vimrc needs to be copied into the Salt file server to /srv/salt/vimrc. In Salt, everything is a file, so no path redirection needs to be accounted for. The vimrc file is placed right next to the vim.sls file. The same command as above can be executed to all the vim SLS formulas and now include managing the file.
 
-`mkdir ~/Boltdir/modules/apache`{{execute}}
+`sudo salt '*' state.apply vim`{{execute}}
 
-`mkdir ~/Boltdir/modules/apache/files`{{execute}}
+### Deploy nginx
 
-`mkdir ~/Boltdir/modules/apache/plans`{{execute}}
+/srv/salt/nginx/init.sls:
 
-Create your plan file:
+`sudo nano /srv/salt/nginx/init.sls`{{execute}}
 
-`nano ~/Boltdir/modules/apache/plans/install.yaml`{{execute}}
-
-add thhe following content
-
+```yaml
+nginx:
+  pkg.installed: []
+  service.running:
+    - require:
+      - pkg: nginx
 ```
-parameters:
-  targets:
-    type: TargetSpec
+This new sls formula has a special name -- init.sls. When an SLS formula is named init.sls it inherits the name of the directory path that contains it. This formula can be referenced via the following command:
 
-steps:
-  - name: install_apache
-    task: package
-    targets: $targets
-    parameters:
-      action: install
-      name: apache2
-    description: "Install Apache using the packages task"
-```
-
-Type `ctrl+x` then `Y` and enter to save and quit the editor
-
-Make sure you are in the right directory:
-
-`cd ~/Boltdir`{{execute}}
-
-Execute the bolt plan:
-
-`bolt plan run apache::install -t all_linux`{{execute}}
-
-This fails because of privilige issues. We should install using sudo
-
-```bash
-Starting: plan apache::install
-Starting: Install Apache using the packages task on target1, target2
-Finished: Install Apache using the packages task with 2 failures in 0.62 sec
-Finished: plan apache::install in 0.64 sec
-Failed on target1:
-  E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied) E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
-  {
-    "status": "failure"
-  }
-Failed on target2:
-  E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied) E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
-  {
-    "status": "failure"
-  }
-Failed on 2 targets: target1,target2
-```
-
-`--run-as root` is the simplest way to progress:
-
-`bolt plan run apache::install -t all_linux --run-as root`{{execute}}
-
-```bash
-Starting: plan apache::install
-Starting: Install Apache using the packages task on target1, target2
-Finished: Install Apache using the packages task with 0 failures in 13.64 sec
-Finished: plan apache::install in 13.65 sec
-Plan completed successfully with no result
-```
+`salt '*' state.apply nginx`{{execute}}
