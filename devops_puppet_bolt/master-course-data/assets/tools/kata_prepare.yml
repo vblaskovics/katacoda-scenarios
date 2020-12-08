@@ -74,6 +74,7 @@
     - name: add centos user to each node
       user:
         name: centos
+        password: "{{ 'password' | password_hash('sha512') }}"
         state: present
 
     - name: start ssh
