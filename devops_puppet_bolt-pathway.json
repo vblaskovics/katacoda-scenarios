@@ -1,0 +1,11 @@
+{
+  "title": "DevOps Puppet Bolt sandboxes",
+  "description": "DevOps Puppet Bolt sandboxes",
+  "courses": [
+    {
+      "course_id": "01-get-started-with-bolt",
+      "title": "01-get-started-with-bolt",
+      "description": "01-get-started-with-bolt"
+    }
+  ]
+}
