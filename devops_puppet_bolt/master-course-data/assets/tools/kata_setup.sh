@@ -2,7 +2,7 @@
 
 apt install -y python3 python3-pip
 
-pip install ansible
+pip install ansible docker
 
 ansible-playbook -i localhost, -c local kata_prepare.yml
 
