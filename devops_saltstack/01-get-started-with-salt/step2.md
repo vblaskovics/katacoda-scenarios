@@ -25,13 +25,13 @@ Type `ctrl+x` then `Y` and enter to save and quit the editor
 `sudo apt update`{{execute}}
 
 ## Install Salt Server
-`sudo apt-get install salt-master`{{execute}}
+`sudo apt-get install -y salt-master`{{execute}}
 
 ## Install Salt Minion
-`sudo apt-get install salt-minion`{{execute}}
+`sudo apt-get install -y salt-minion`{{execute}}
 
 ## Install SSH package
-`sudo apt-get install salt-ssh`{{execute}}
+`sudo apt-get install -y salt-ssh`{{execute}}
 
 ## Configure the salt container to manage itself via salt minion
 
@@ -65,10 +65,15 @@ Salt server needs to approve the minion's key in order to start the communicatio
 `sudo salt '*' test.version`{{execute}}
 
 `sudo salt '*' disk.usage`{{execute}}
+
 `sudo salt '*' sys.doc`{{execute}}
+
 `sudo salt '*' cmd.run 'ls -l /etc'`{{execute}}
+
 `sudo salt '*' pkg.install vim`{{execute}}
+
 `sudo salt '*' network.interfaces`{{execute}}
+
 `sudo salt myminion grains.item pythonpath --out=pprint`{{execute}}
 
 ## Do the same bootstrapping procedure for target1 and target2
@@ -93,10 +98,15 @@ Salt server needs to approve the minion's key in order to start the communicatio
 `sudo salt '*' test.version`{{execute}}
 
 `sudo salt '*' disk.usage`{{execute}}
+
 `sudo salt '*' sys.doc`{{execute}}
+
 `sudo salt '*' cmd.run 'ls -l /etc'`{{execute}}
+
 `sudo salt '*' pkg.install vim`{{execute}}
+
 `sudo salt '*' network.interfaces`{{execute}}
+
 `sudo salt myminion grains.item pythonpath --out=pprint`{{execute}}
 
 ## Grains
