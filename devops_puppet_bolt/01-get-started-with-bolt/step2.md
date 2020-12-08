@@ -46,14 +46,17 @@ Type `ctrl+x` then `Y` and enter to save and quit the editor
 And another one just for fun:
 
 You can of course limit which host to run the commands on by selecting just one host
+
 `bolt command run "df -h" --targets target2`{{execute}}
 
 Or listing them:
+
 `bolt command run "df -h" --targets target1,target2`{{execute}}
 
 You can also run commands from a local script:
 
 create a script caled myscript.sh and add some bash script commands to it:
+
 `nano myscript.sh`{{execute}}
 
 ```bash
@@ -65,7 +68,7 @@ Type `ctrl+x` then `Y` and enter to save and quit the editor
 
 now run the contents of this script line-by-line on target nodes
 
-`bolt command run @myscript --targets all_linux`{{execute}}
+`bolt command run @myscript.sh --targets all_linux`{{execute}}
 
 You can upload a file to the targets:
 
@@ -89,14 +92,19 @@ Create the followin strucure in your project:
 ```
 
 `mkdir ~/Boltdir/modules`{{execute}}
+
 `mkdir ~/Boltdir/modules/apache`{{execute}}
+
 `mkdir ~/Boltdir/modules/apache/files`{{execute}}
+
 `mkdir ~/Boltdir/modules/apache/plans`{{execute}}
 
 Create your plan file:
 
 `nano ~/Boltdir/modules/apache/plans/install.yaml`{{execute}}
+
 add thhe following content
+
 ```
 parameters:
   targets:
@@ -121,3 +129,35 @@ Make sure you are in the right directory:
 Execute the bolt plan:
 
 `bolt plan run apache::install -t all_linux`{{execute}}
+
+This fails because of privilige issues. We should install using sudo
+
+```bash
+Starting: plan apache::install
+Starting: Install Apache using the packages task on target1, target2
+Finished: Install Apache using the packages task with 2 failures in 0.62 sec
+Finished: plan apache::install in 0.64 sec
+Failed on target1:
+  E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied) E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
+  {
+    "status": "failure"
+  }
+Failed on target2:
+  E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied) E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?
+  {
+    "status": "failure"
+  }
+Failed on 2 targets: target1,target2
+```
+
+`--run-as root` is the simplest way to progress:
+
+`bolt plan run apache::install -t all_linux --run-as root`{{execute}}
+
+```bash
+Starting: plan apache::install
+Starting: Install Apache using the packages task on target1, target2
+Finished: Install Apache using the packages task with 0 failures in 13.64 sec
+Finished: plan apache::install in 13.65 sec
+Plan completed successfully with no result
+```

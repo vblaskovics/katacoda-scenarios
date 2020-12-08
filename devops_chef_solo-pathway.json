@@ -1,0 +1,11 @@
+{
+  "title": "DevOps Chef Solo sandboxes",
+  "description": "DevOps Chef Solo sandboxes",
+  "courses": [
+    {
+      "course_id": "01-get-started-with-chef-solo",
+      "title": "01-get-started-with-chef-solo",
+      "description": "01-get-started-with-chef-solo"
+    }
+  ]
+}
