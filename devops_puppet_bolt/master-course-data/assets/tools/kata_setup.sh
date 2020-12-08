@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt -y install python3 python3-pip
+apt install -y python3 python3-pip
 
 pip install ansible
 
