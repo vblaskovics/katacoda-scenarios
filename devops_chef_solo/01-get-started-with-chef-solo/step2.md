@@ -18,7 +18,7 @@ Type `ctrl+x` then `Y` and enter to save and quit the editor
 
 ## Create Hello World cookbook
 
-`cookbook_path 'mkdir -p ~/chef/cookbooks/test/recipes'`{{execute}}
+`mkdir -p ~/chef/cookbooks/test/recipes`{{execute}}
 
 Edit the default recipy file
 
