@@ -37,7 +37,7 @@ Type `ctrl+x` then `Y` and enter to save and quit the editor
 
 First we need to make sure that only one entry is present in the /etc/hosts file for the salt hostname
 
-`sudo nano /etc/host`{{execute}}
+`sudo nano /etc/hosts`{{execute}}
 
 ```
 127.0.0.1       localhost
@@ -51,14 +51,34 @@ ff02::2 ip6-allrouters
 ```
 Now we need to start the salt server in daemon mode:
 
-`sudo salt-server -d`{{execute}}
+`sudo salt-master -d`{{execute}}
 
 Now we can start the salt minion in daemon mode:
-`sudo salt-minon -d`{{execute}}
+
+`sudo salt-minion -d`{{execute}}
 
 Salt server needs to approve the minion's key in order to start the communication
 
+`sudo salt-key`{{execute}}
+
+```
+centos@salt:/$ sudo salt-key
+Accepted Keys:
+Denied Keys:
+Unaccepted Keys:
+salt
+Rejected Keys:
+````
+
 `sudo salt-key -A`{{execute}}
+
+```
+The following keys are going to be accepted:
+Unaccepted Keys:
+salt
+Proceed? [n/Y] y
+Key for minion salt accepted.
+```
 
 ## Test your salt setup
 
