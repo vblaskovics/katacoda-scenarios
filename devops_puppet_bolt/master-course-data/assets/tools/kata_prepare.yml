@@ -71,11 +71,26 @@
   tasks:
     - ping:
 
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
     - name: add centos user to each node
       user:
         name: centos
         password: "{{ 'password' | password_hash('sha512') }}"
         state: present
+        groups:
+          - wheel
 
     - name: start ssh
       shell: "service ssh start"
