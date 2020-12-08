@@ -1,8 +1,6 @@
 #!/bin/bash
 
-wget https://apt.puppet.com/puppet-tools-release-bionic.deb
-dpkg -i puppet-tools-release-bionic.deb
-apt-get update && sudo apt-get install puppet-bolt python3 python3-pip
+apt -y install python3 python3-pip
 
 pip install ansible
 
