@@ -30,18 +30,18 @@
         "title": "Check that built artifact was stored in Artifactory",
         "text": "step5.md"
       }
-    ],    
+    ],
     "finish": {
       "text": "finish.md"
-    }  
+    }
   },
-  "files": [], 
+  "files": [],
   "environment": {
     "uilayout": "termilal-terminal",
     "uimessage1": "\u001b[32mTerminal for Salt Master\u001b[m\r\n",
     "uimessage2": "\u001b[32mTerminal for Salt Minion\u001b[m\r\n"
   },
   "backend": {
-    "imageid": "centos-vm"
+    "imageid": "ubuntu:2004"
   }
 }

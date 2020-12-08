@@ -1,6 +1,8 @@
 #!/bin/bash
 
-yum install -y ansible ansible-lint yamllint python-docker-py tree
+apt install -y python3 python3-pip
+
+pip install ansible docker
 
 ansible-playbook -i localhost, -c local kata_prepare.yml
 
