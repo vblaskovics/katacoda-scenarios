@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: no
   vars:
-    image_name: rastasheep/ubuntu-sshd:latest
+    image_name: tjozsa/labnode:1.0.0
     docker_network_name: "mynet"
     target_containers:
       - name: bolt
