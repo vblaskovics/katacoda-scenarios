@@ -11,24 +11,12 @@
     },
     "steps": [
       {
-        "title": "Check nothing is running",
+        "title": "Initialize Lab",
         "text": "step1.md"
       },
       {
-        "title": "Build custom Jenkins image",
+        "title": "Work with lab",
         "text": "step2.md"
-      },
-      {
-        "title": "Launch CI/CD pipeline",
-        "text": "step3.md"
-      },
-      {
-        "title": "Check Jenkins has built our application pipeline",
-        "text": "step4.md"
-      },
-      {
-        "title": "Check that built artifact was stored in Artifactory",
-        "text": "step5.md"
       }
     ],
     "finish": {
