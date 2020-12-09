@@ -21,6 +21,11 @@
       "course_id": "ansible-104",
       "title": "ansible-104",
       "description": "ansible-104"
+    },
+    {
+      "course_id": "ansible-playground",
+      "title": "ansible-playground",
+      "description": "ansible-playground"
     }
   ]
 }
