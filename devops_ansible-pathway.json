@@ -6,6 +6,21 @@
       "course_id": "ansible-101",
       "title": "ansible-101",
       "description": "ansible-101"
+    },
+    {
+      "course_id": "ansible-102",
+      "title": "ansible-102",
+      "description": "ansible-102"
+    },
+    {
+      "course_id": "ansible-103",
+      "title": "ansible-103",
+      "description": "ansible-103"
+    },
+    {
+      "course_id": "ansible-104",
+      "title": "ansible-104",
+      "description": "ansible-104"
     }
   ]
 }
