@@ -296,7 +296,7 @@ The handler consists of two parts, `notify` and `handler`.
 
 Run `~/working/handler_playbook.yml`.
 
-`ansible-playbook handler_playbook.yml` {{execute}}
+`ansible-playbook handler_playbook.yml`{{execute}}
 
 `ansible-playbook handler_playbook.yml`{{execute}}
 

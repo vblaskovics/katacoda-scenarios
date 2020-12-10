@@ -1,4 +1,4 @@
-#Variable
+# Variable
 ---
 You can increase the versatility of your playbook by using variables. Here you will learn how to use various variables.
 
@@ -156,7 +156,7 @@ ok: [node-1] => {
 (abridgement)
 ```
 
-Run `vars_play_playbook.yml` 
+Run `vars_play_playbook.yml`
 
 `cd ~/working`{{execute}}
 
@@ -278,7 +278,7 @@ Introducing how to define other variables.
 
 ### Definition in set_fact
 ---
-You can use the [set_fact](https://docs.ansible.com/ansible/latest/modules/set_fact_module.html) module to define any variable in your task part. 
+You can use the [set_fact](https://docs.ansible.com/ansible/latest/modules/set_fact_module.html) module to define any variable in your task part.
 A common use is to receive the execution result of one task, process its value to define a new variable, and use that value in subsequent tasks.
 
 Exercises using `set_fact` will appear in the next part.

@@ -24,7 +24,7 @@ Both of these playbooks run correctly and print the result of `ps -ef`. Try two 
 
 Both should have run successfully. Now let's apply `ansible-lint` to these two playbooks.
 
-`ansible-lint lint_ok_playbook.yml` {{execute}}
+`ansible-lint lint_ok_playbook.yml`{{execute}}
 
 This ends normally.
 

@@ -1,5 +1,5 @@
-#Error handling
----
+# Error handling
+
 You can group a set of tasks in a playbook and apply `when` or` ingore_errors` together. This is where the `block` clause comes in. The `block` clause also has error handling capabilities, allowing you to use the` always` clause to perform the task of the `rescue` clause for errors within the` block`, or to execute regardless of the error.
 
 ## block

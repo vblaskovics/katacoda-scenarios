@@ -1,10 +1,10 @@
-# template
----
+# Template
+
 Ansible has a template function, which enables dynamic file creation. [`Jinja2`](https://palletsprojects.com/p/jinja/) is used as the template engine.
 
 Templates are a very versatile feature and can be used in a variety of situations. It is possible to dynamically generate and distribute the configuration file for the application, and create a report based on the information collected from each node.
 
-## Jinja2 
+## Jinja2
 ---
 Two elements are required to use the template.
 

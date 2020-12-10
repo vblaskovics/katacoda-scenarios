@@ -1,58 +1,23 @@
-In order to configure this environment, exec the below command.
+Prepare the exercise environment.
+
+## preparation work
+---
+Execute the following command to prepare the exercise environment. This operation takes about 1-2 minutes.
+
 `yum install -y git && git clone https://github.com/irixjp/katacoda-scenarios && cd katacoda-scenarios/master-course-data/assets/tools/`{{execute}}
 
 `bash ./kata_setup.sh`{{execute}}
 
-
-Ansible version is below:
-
-`ansible --version`{{execute}}
-
-
-ansible.cfg is below:
-
-`cat ~/.ansible.cfg`{{execute}}
-
-
-Inventory file is below:
-
-`cat ~/inventory`{{execute}}
-
-
-This playground has three centos7 clients that is launched as docker container with privileges.
+## Environmental overview
+---
+In this exercise, we will use the following environment. Three servers, `node-1`,` node-2`, and `node-3`, are running, and you can use Ansible to perform various operations on them.
 
 ![image0-1](https://raw.githubusercontent.com/irixjp/katacoda-scenarios/master/master-course-data/assets/images/kata_env.png "kata_env.png")
 
+## Supplementary information
+---
+At the top of the terminal there are tabs called `node-1`,` node-2`. Click here to connect to port 80 on each server. Now that nothing is running on each node, clicking it does nothing, but we will use this tab in the exercise.
 
-You can access port 80 for each nodes via buttons "node-1,2,3" from the top of this console.
+> Note: This port is actually accessing the container, which is in the form of 8081-> node-1: 80, 8082-> node-2: 80.
 
-There are some related commands.
-
-`ansible-lint --version`{{execute}}
-
-`yamllint --version`{{execute}}
-
-`git --version`{{execute}}
-
-
-Sample commands:
-
-`ansible all --list-hosts`{{execute}}
-
-`ansible web -m ping`{{execute}}
-
-`ansible node-1 -m shell -a 'hostname'`{{execute}}
-
-
-You can access to each node via 'node-1,2,3' tab on the top.
-Your access is redirected the below:
-
-```
-node-1 tab -> Host:8081 -> node-1:80
-node-2 tab -> Host:8082 -> node-2:80
-node-3 tab -> Host:8083 -> node-3:80
-```
-
-Enjoy!!
-
-[Back to top page](https://www.katacoda.com/irixjp)
+Click this tab if you were instructed to "access the node in your browser" during the exercise steps.

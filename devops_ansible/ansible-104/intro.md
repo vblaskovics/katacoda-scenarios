@@ -1,20 +1,28 @@
-[![Build Status](https://travis-ci.org/irixjp/katacoda-scenarios.svg?branch=master)](https://travis-ci.org/irixjp/katacoda-scenarios)
+## Translated by
+Tamas Jozsa and Google Translate
 
-# Ansible 基礎「独習」コースへようこそ
+>Credits: all credits go to https://www.katacoda.com/irixjp as I have just translated this to english. Originals found here: https://www.katacoda.com/irixjp/katacoda-examples.
 
-本コースは Ansible の基礎をすばやく学習するためのコースです。以下のポイントを解説しています。
+## Ansible
 
-- lint による規約チェック
-- テストの自動化(作成中)
+### Welcome to the basic "self-study" course
 
-本教材の作成にあたり以下のコンテンツを参考にしています。
-- https://github.com/ansible/workshops
+This course is for quickly learning the basics of Ansible. The following points are explained.
 
-ミスや修正箇所を見つけた方は以下へご連絡ください。
-- https://github.com/irixjp/katacoda-scenarios/issues
+* Ansible coding conventions
+* Ansible testing and linting
 
-免責事項
-- 本教材は作成者 [@irix_jp](https://twitter.com/irix_jp) およびコントリビューターが個人で知りうる範囲で作成しており、その正確性と完全性を保証するものではありません。
-- 本教材から得られた情報により、何らかの損害を負った場合であっても、作成者並びにコントリビューターは一切の責任を負いません。予めご了承ください。
+The following contents are referred to when creating this teaching material.
+* Creating a basic playbook https://github.com/ansible/workshops
 
-[Back to top page](https://www.katacoda.com/irixjp)
+If you find any mistakes or corrections, please contact us below.
+* Creating a basic playbook https://github.com/tjozsa/katacoda-scenarios/issues
+
+Disclaimer
+* Creating a basic playbook
+This teaching material is created to the extent that the creator [@irix_jp](https://twitter.com/irix_jp) and contributors can know it individually, and its accuracy and completeness are not guaranteed.
+
+* Creating a basic playbook
+The creator and contributor are not responsible for any damage caused by the information obtained from this teaching material. Please note.
+
+[Back to top page] (https://www.katacoda.com/irixjp)
