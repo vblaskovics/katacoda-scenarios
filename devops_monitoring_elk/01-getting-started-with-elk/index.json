@@ -28,16 +28,12 @@
     "showdashboard": true,
     "dashboards": [
       {
-        "name": "Prometheus",
-        "port": 9090
+        "name": "Kibana",
+        "port": 5601
       },
       {
-        "name": "Node-Exporter",
-        "port": 9100
-      },
-      {
-        "name": "Grafana",
-        "port": 3000
+        "name": "Elastic Search",
+        "port": 9200
       }
     ],
     "uilayout": "editor-terminal",
