@@ -1,4 +1,5 @@
 First you need to start ELK stack. We have already downloaded you a git repository. All you need to do is start it from the terminal:
+`cd docker-elk`{{execute}}
 `docker-compose up`{{execute}}
 
 This can take a while.
