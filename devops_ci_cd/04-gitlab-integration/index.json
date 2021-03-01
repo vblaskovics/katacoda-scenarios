@@ -11,12 +11,12 @@
     },
     "steps": [
       {
-        "title": "Add a static analysis tool to the toolchain",
-        "text": "step1-add-static-analysis.md"
+        "title": "Start Jenkins",
+        "text": "step1-start-jenkins.md"
       },
       {
-        "title": "Launch CI/CD pipeline",
-        "text": "step2-launch-cicd-pipeline.md"
+        "title": "Install Gilab Plugin",
+        "text": "step2-install-gitlab-plugin.md"
       },
       {
         "title": "Get Gitlab Access Token",
