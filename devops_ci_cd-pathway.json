@@ -16,6 +16,11 @@
         "course_id": "03-bootstrap-app-pipeline",
         "title": "03 Bootstrap a New Application Pipeline",
         "description": "See how to quickly bootstrap a pipeline for a new app"
+      },
+      {
+        "course_id": "04-gitlab-integration",
+        "title": "04 Integrate gitlab with jenkins",
+        "description": "See how quickly you can set up an ideal connection with Gitlab."
       }
     ]
 }
