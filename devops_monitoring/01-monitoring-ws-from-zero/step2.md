@@ -25,36 +25,30 @@ scrape_configs:
       - targets: ['node-exporter:9100']
 ```
 
-## 1 - Metrics types
+## Start node-exporter
+
+The `workshop-prometheus-grafana/docker-compose.yml`{{open}} file contains another container definition called node-exporter. Take a look. This container is responsible to collect the server metrics on-demand. To trigger the collection of metrics you need to visit the built in web server. Once a GET request is received the node-exporter application will collect and return all metrics in a text document.
+
+```
+docker-compose up -d node-exporter
+```{{execute}}
+
+Try out the node exporter here:
+https://[[HOST_SUBDOMAIN]]-9100-[[KATACODA_HOST]].environments.katacoda.com/metrics
+
+The prometehus service will visit this endpoint periodically and downloads the merics. The mertics are stored in a Time Series database of the Prometheus DB.
+
+## Check out Prometheus metrics types
 
 Take a look on Prometheus metric types (counter, gauges, histogram, summary) => [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/)
 
-## 2 - Start node exporter
+Visit the prometheus UI to check if the prometheus service processed the node-exporter metrics endpoint:
+https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/targets
 
-```
-# Starts Prometheus
-docker-compose up -d prometheus
+Visit the prometheus UI to create PromQL queries and display them in form of table or graph.
+https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/graph
 
-# Starts system metrics exporter
-docker-compose up -d node-exporter
-```
-
-- Prometheus console: [http://localhost:9090](http://localhost:9090).
-- Full list of ingested metrics: [http://localhost:9090/graph](http://localhost:9090/graph).
-- `node-exporter` metrics: [http://localhost:9100/metrics](http://localhost:9100/metrics).
-
-## 3 - 
-
-Update `prometheus.yml` config file, to scrape node-exporter metrics every 10 seconds. 🚀
-
-<details>
-  <summary>💡 Solution</summary>
-
-
-
-</details>
-
-## 4 - Execute your first PromQL query
+## PromQL query hello world
 
 **PromQL documentation**:
 
@@ -62,7 +56,7 @@ Update `prometheus.yml` config file, to scrape node-exporter metrics every 10 se
 
 - advanced: [https://prometheus.io/docs/prometheus/latest/querying/functions/](https://prometheus.io/docs/prometheus/latest/querying/functions/)
 
-### 4.0 - Memory usage
+### Check Memory usage
 
 Go to [http://localhost:9090/graph](http://localhost:9090/graph) and write a query displaying a graph of free memory on your OS.
 
@@ -74,7 +68,7 @@ Metric name is `node_memory_MemFree_bytes`.
   Query: `node_memory_MemTotal_bytes{}`
 </details>
 
-### 4.1 - Human readable
+### Human readable
 
 Same metric but in GigaBytes ?
 
@@ -85,7 +79,7 @@ Same metric but in GigaBytes ?
 </details>
 
 
-### 4.2 - Relative to total memory
+### Relative to total memory
 
 Same metric, but in percent of total available memory ?
 
