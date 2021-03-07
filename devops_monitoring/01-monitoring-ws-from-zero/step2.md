@@ -34,6 +34,7 @@ docker-compose up -d node-exporter
 ```{{execute}}
 
 Try out the node exporter here:
+
 https://[[HOST_SUBDOMAIN]]-9100-[[KATACODA_HOST]].environments.katacoda.com/metrics
 
 The prometehus service will visit this endpoint periodically and downloads the merics. The mertics are stored in a Time Series database of the Prometheus DB.
@@ -52,9 +53,17 @@ https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/grap
 
 **PromQL documentation**:
 
-- basic: [https://prometheus.io/docs/prometheus/latest/querying/basics/](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+- basic: 
 
-- advanced: [https://prometheus.io/docs/prometheus/latest/querying/functions/](https://prometheus.io/docs/prometheus/latest/querying/functions/)
+[https://prometheus.io/docs/prometheus/latest/querying/basics/](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+
+- advanced: 
+
+[https://prometheus.io/docs/prometheus/latest/querying/functions/](https://prometheus.io/docs/prometheus/latest/querying/functions/)
+
+- histogram vs summary
+
+[https://prometheus.io/docs/practices/histograms/]
 
 ### Check Memory usage
 
@@ -88,5 +97,5 @@ Tips: `node-exporter` metrics are prefixed by `node_`.
 <details>
   <summary>💡 Solution</summary>
 
-  Query: `(node_memory_MemTotal_bytes{} - node_memory_MemFree_bytes{}) / node_memory_MemTotal_bytes{} * 100`
+  Query: `(node_memory_MemTotal_bytes{} - node_memory_MemFree_bytes{}) / node_memory_MemTotal_bytes{} * 100)`
 </details>

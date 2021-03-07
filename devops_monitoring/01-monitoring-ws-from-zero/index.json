@@ -34,10 +34,6 @@
       {
         "name": "Node-Exporter",
         "port": 9100
-      },
-      {
-        "name": "Grafana",
-        "port": 3000
       }
     ],
     "uilayout": "editor-terminal",
