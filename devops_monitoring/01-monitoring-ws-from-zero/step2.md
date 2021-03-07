@@ -5,9 +5,8 @@ Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scra
 <pre class="file" data-filename="workshop-prometheus-grafana/prometheus.yml" data-target="insert"  data-marker="#NODEEXPORTER">  - job_name: 'node-exporter'
     scrape_interval: 10s
     static_configs:
-      - targets: ['node-exporter:9100']</pre>
-
-```
+      - targets: ['node-exporter:9100']
+</pre>
 
 This is how the file should look like when you are done editing it.
 

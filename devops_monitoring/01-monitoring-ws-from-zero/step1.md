@@ -20,8 +20,9 @@ Change to the directory of this envirnment.
 cd workshop-prometheus-grafana
 ```{{execute}}
 
+
+Start prometheus container in docker.
 ```
-# Starts Prometheus
 docker-compose up -d prometheus
 ```{{execute}}
 
