@@ -21,6 +21,11 @@
         "course_id": "04-gitlab-integration",
         "title": "04 Integrate gitlab with jenkins",
         "description": "See how quickly you can set up an ideal connection with Gitlab."
+      },
+      {
+        "course_id": "05-jenkins-sandbox-gitlab",
+        "title": "05-jenkins-sandbox-gitlab",
+        "description": "05-jenkins-sandbox-gitlab"
       }
     ]
 }

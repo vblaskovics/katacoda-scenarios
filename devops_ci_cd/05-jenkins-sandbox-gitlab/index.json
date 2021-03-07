@@ -1,0 +1,49 @@
+{
+  "pathwayTitle": "Treating Your Pipeline as a Product",
+  "title": "Extend the Pipeline with Code Analysis",
+  "description": "See how to safely integrate a new pipeline activity",
+  "time": "10-15 minutes",
+  "details": {
+    "intro": {
+      "courseData": "courseBase.sh",
+      "text": "intro.md",
+      "credits": "Manuel Pais"
+    },
+    "steps": [
+      {
+        "title": "Start Jenkins",
+        "text": "step1-start-jenkins.md"
+      },
+      {
+        "title": "Install Gilab Plugin",
+        "text": "step2-install-gitlab-plugin.md"
+      },
+      {
+        "title": "Get Gitlab Access Token",
+        "text": "step3-get-gitlab-access-token.md"
+      },
+      {
+        "title": "Setup Jenkins and your Target Repos",
+        "text": "step4-jenkins-credentials.md"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "files": [],
+  "environment": {
+    "showdashboard": true,
+    "dashboards":  [
+      {
+        "name": "CI/CD Pipeline",
+        "port": 80
+      }
+    ],
+    "uilayout": "editor-terminal",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}
