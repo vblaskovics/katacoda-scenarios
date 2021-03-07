@@ -2,7 +2,7 @@
 
 Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scrape node-exporter metrics every 10 seconds.
 
-<pre class="file" data-filename="app.js" data-target="insert"  data-marker="#NODEEXPORTER">  - job_name: 'node-exporter'
+<pre class="file" data-filename="workshop-prometheus-grafana/prometheus.yml" data-target="insert"  data-marker="#NODEEXPORTER">  - job_name: 'node-exporter'
     scrape_interval: 10s
     static_configs:
       - targets: ['node-exporter:9100']</pre>
