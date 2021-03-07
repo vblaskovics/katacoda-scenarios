@@ -1,6 +1,6 @@
 ## Let's grab some system metrics (memory, CPU, disk...)
 
-Update `prometheus.yml`{{open}} config file, to scrape node-exporter metrics every 10 seconds.
+Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scrape node-exporter metrics every 10 seconds.
 
 <pre class="file" data-filename="app.js" data-target="insert"  data-marker="#NODEEXPORTER">  - job_name: 'node-exporter'
     scrape_interval: 10s
