@@ -1,15 +1,29 @@
-## Let's grab some system metrics (memory, CPU, disk...)
+##
 
-Update `prometheus.yml`{{open}} config file, to scrape node-exporter metrics every 10 seconds.
+## 1 - Metrics types
 
-<pre class="file" data-filename="app.js" data-target="insert"  data-marker="#NODEEXPORTER">  - job_name: 'node-exporter'
-    scrape_interval: 10s
-    static_configs:
-      - targets: ['node-exporter:9100']</pre>
+Take a look on Prometheus metric types (counter, gauges, histogram, summary) => [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/)
+
+## 2 - Start Prometheus
 
 ```
+# Starts Prometheus
+docker-compose up -d prometheus
 
-This is how the file should look like when you are done editing it.
+# Starts system metrics exporter
+docker-compose up -d node-exporter
+```
+
+- Prometheus console: [http://localhost:9090](http://localhost:9090).
+- Full list of ingested metrics: [http://localhost:9090/graph](http://localhost:9090/graph).
+- `node-exporter` metrics: [http://localhost:9100/metrics](http://localhost:9100/metrics).
+
+## 3 - Let's grab some system metrics (memory, CPU, disk...)
+
+Update `prometheus.yml` config file, to scrape node-exporter metrics every 10 seconds. 🚀
+
+<details>
+  <summary>💡 Solution</summary>
 
 ```
 #
@@ -24,34 +38,7 @@ scrape_configs:
     scrape_interval: 10s
     static_configs:
       - targets: ['node-exporter:9100']
-```
-
-## 1 - Metrics types
-
-Take a look on Prometheus metric types (counter, gauges, histogram, summary) => [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/)
-
-## 2 - Start node exporter
-
-```
-# Starts Prometheus
-docker-compose up -d prometheus
-
-# Starts system metrics exporter
-docker-compose up -d node-exporter
-```
-
-- Prometheus console: [http://localhost:9090](http://localhost:9090).
-- Full list of ingested metrics: [http://localhost:9090/graph](http://localhost:9090/graph).
-- `node-exporter` metrics: [http://localhost:9100/metrics](http://localhost:9100/metrics).
-
-## 3 - 
-
-Update `prometheus.yml` config file, to scrape node-exporter metrics every 10 seconds. 🚀
-
-<details>
-  <summary>💡 Solution</summary>
-
-
+```{{}}
 
 </details>
 

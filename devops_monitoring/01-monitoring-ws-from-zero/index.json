@@ -1,7 +1,7 @@
 {
-  "pathwayTitle": "Getting stared with Monitoring",
-  "title": "From Zero",
-  "description": "See how to launch a fully running monitoring system from zero",
+  "pathwayTitle": "Getting stared with Monitoring in Prometheus",
+  "title": "Prometheus: Getting Started",
+  "description": "See how to launch a fully running pull monitoring system with Prometheus",
   "time": "20-25 minutes",
   "details": {
     "intro": {
