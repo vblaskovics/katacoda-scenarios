@@ -17,7 +17,7 @@ Add a new datasource to Grafana.
 - Mode: `server`
 - Pointing to `http://prometheus:9090`{{copy}}
 
-![](imgs/grafana-setup-datasource.png)
+![](assets/grafana-setup-datasource.png)
 
 ## Add a custom dashboard
 
@@ -32,19 +32,19 @@ Create a graph showing current memory usage.
 
   Query: `(node_memory_MemTotal_bytes{} - node_memory_MemFree_bytes{}) / node_memory_MemTotal_bytes{} * 100`
 
-  ![](imgs/grafana-new-metric.png)
+  ![](assets/grafana-new-metric.png)
 </details>
 
 ### Some formatting
 
 Grafana should be displaying graph in %, such as:
 
-![](imgs/grafana-graph-percent.png)
+![](assets/grafana-graph-percent.png)
 
 <details>
   <summary>💡 Solution</summary>
 
-  ![](imgs/grafana-set-unit.png)
+  ![](assets/grafana-set-unit.png)
 </details>
 
 ### CPU load
@@ -53,12 +53,12 @@ In the same dashboard, add a new graph for CPU load (1min, 5min, 15min).
 
 Tips: you will need a new metric prefixed by `node_`.
 
-![](imgs/grafana-cpu-load.png)
+![](assets/grafana-cpu-load.png)
 
 <details>
   <summary>💡 Solution</summary>
 
-  ![](imgs/grafana-set-cpu-load-metrics.png)
+  ![](assets/grafana-set-cpu-load-metrics.png)
 </details>
 
 ### Disk usage
@@ -67,7 +67,7 @@ In the same dashboard, add a new graph for `sda` disk usage (ko written per seco
 
 You will need `rate()` PromQL function: [https://prometheus.io/docs/prometheus/latest/querying/functions/#rate](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate)
 
-![](imgs/grafana-disk-load.png)
+![](assets/grafana-disk-load.png)
 
 <details>
   <summary>💡 Solution</summary>
@@ -87,5 +87,5 @@ Let's import a dashboard from Grafana website.
 
 Those dashboards are only compatible with Prometheus data-source and node-exporter.
 
-![](imgs/grafana-community-dash.png)
+![](assets/grafana-community-dash.png)
 
