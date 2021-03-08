@@ -1,97 +1,18 @@
 ## Your Prometheus and Grafana environment is starting
 Give it some time to load all the images and start up. It is happening as you read these lines automatically.
 
-You can find grafana on port 3000:
+We have added a **dummy smtp server** to your environment.
 
-https://[[HOST_SUBDOMAIN]]-3000-[[KATACODA_HOST]].environments.katacoda.com
+Please see `workshop-prometheus-grafana/docker-compose.yml`{{open}} and check the mailhog service.
 
-username:**grep** password:**demo**
+You can find mailhog UI on port 8025:
 
+https://[[HOST_SUBDOMAIN]]-8025-[[KATACODA_HOST]].environments.katacoda.com
 
-In this exercise we will also use Loki, Grafana's log agregation engine. It has been added to the `workshop-prometheus-grafana/docker-compose.yml`{{open}} file and started as you read this instruction.
+In this exercise we will set up alerts and observe them on the dummy mailhog service as they are triggered how Grafana will send emails.
 
-## Prepare Docker-Compose for logging to Loki
-
-Change directory to 
-`cd workshop-prometheus-grafana`{{execute}}
-
-Install Loki Docker logging driver before starting the compose stack
-
-`docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`{{execute}}
-
-Stop your solution
-`docker-compose down`{{execute}}
-
-Start Docker-Compose Stack
-`docker-compose up -d`{{execute}}
-
-## Explore the new solution
-Play around with the solution...
-
-Notice that you have a Loki datasource in Explore view.
-
-## Additional documentation:
-https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/
-
-## Monitor services: nginx, postgresql...
-
-### Export Nginx and PostgreSQL metrics
-
-There are two new containers to produce logs for our learning environment. A simple Nginx web server and a PostgreSQL DB.
-
-These are already added to your docker-compose environment. All you need to do is add them to your prometheus monitoring configuration.
-
-## Configure nginx exporter
-
-You can see that in the `workshop-prometheus-grafana/docker-compose.yml`{{open}} we nave an Nginx web server. We also defined a container that contains a metrix exporter for nginx called nginx-exporter. The exporter exposes nginx metrix on the port 9101
-
-You can check the metrics that is exposed here:
-
-https://[[HOST_SUBDOMAIN]]-9101-[[KATACODA_HOST]].environments.katacoda.com/metrics
-
-Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scrape nginx-exporter metrics every 10 seconds.
-
-<pre class="file" data-filename="workshop-prometheus-grafana/prometheus.yml" data-target="insert"  data-marker="#NGINXEXPORTER">  - job_name: 'nginx-exporter'
-    scrape_interval: 10s
-    static_configs:
-      - targets: ['nginx-exporter:9101']
-</pre>
-
-Restart prometheus service.
-
-```
-docker-compose restart prometheus
-```{{execute}}
-
-Check what prometheus sees as targets:
-
-https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/targets
-
-## Configure postgresql exporter
-
-You can see that in the `workshop-prometheus-grafana/docker-compose.yml`{{open}} we nave an postgresql db. We also defined a container that contains a metrix exporter for postgresql called postgresql-exporter. The exporter exposes nginx metrix on the port 9187
-
-You can check the metrics that is exposed here:
-
-https://[[HOST_SUBDOMAIN]]-9187-[[KATACODA_HOST]].environments.katacoda.com/metrics
-
-Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scrape postgresql-exporter metrics every 10 seconds.
-
-<pre class="file" data-filename="workshop-prometheus-grafana/prometheus.yml" data-target="insert"  data-marker="#PGSQLEXPORTER">  - job_name: 'postgresql-exporter'
-    scrape_interval: 10s
-    static_configs:
-      - targets: ['postgresql-exporter:9187']
-</pre>
-
-Restart prometheus service.
-
-```
-docker-compose restart prometheus
-```{{execute}}
-
-Check what prometheus sees as targets:
-
-https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/targets
+## Set up an alert
+Use Grafana UI to set up some alerts and use the HTTP/SQL scripts to trigger them.
 
 ### Generate some metrics
 
@@ -133,7 +54,7 @@ Display 2 graphs:
 
 Tips: you should use `sum by(<label>) (<metric>)` and `irate(<metric>)` (cf PromQL doc).
 
-![](assets/grafana-nginx-404.png)
+![](imgs/grafana-nginx-404.png)
 
 <details>
   <summary>💡 Solution</summary>
@@ -226,11 +147,11 @@ docker-compose exec grafana grafana-cli plugins install petrslavotinek-carpetplo
 docker-compose restart grafana
 ```
 
-![](assets/grafana-heatmap-signups.png)
+![](imgs/grafana-heatmap-signups.png)
 
 Table of top 10 users per post count (`topk()`, `sum by(<label>) (<metric>)`):
 
-![](assets/grafana-table-top-contributors.png)
+![](imgs/grafana-table-top-contributors.png)
 
 <details>
   <summary>💡 Solution</summary>
@@ -256,3 +177,8 @@ Don't forget to update Prometheus configuration in `prometheus.yml` !
 - Setup alerting with AlertManager and basic rules
 - Setup Prometheus service discovery (consul, etc, dns...) to import configuration automatically
 - Limits: multitenancy - partitionning/sharding - scaling - cron tasks
+
+
+
+## Additional documentation:
+https://grafana.com/docs/grafana/latest/alerting/
