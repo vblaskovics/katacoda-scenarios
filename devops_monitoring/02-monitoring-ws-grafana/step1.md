@@ -1,10 +1,5 @@
-## Start Prometheus
-
-Change directory to 
-`cd workshop-prometheus-grafana`{{execute}}
-
-# Starts Prometheus
-`docker-compose up -d`{{execute}}
+## Your Prometheus and Grafana environment is starting
+Give it some time to load all the images and start up. It is happening as you read these lines automatically.
 
 ## Meet Grafana
 

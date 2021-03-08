@@ -3,7 +3,9 @@ Give it some time to load all the images and start up. It is happening as you re
 
 You can find grafana on port 3000:
 
-https://[[HOST_SUBDOMAIN]]-3000-[[KATACODA_HOST]].environments.katacoda.com/metrics
+https://[[HOST_SUBDOMAIN]]-3000-[[KATACODA_HOST]].environments.katacoda.com
+
+username:**grep** password:**demo**
 
 
 In this exercise we will also use Loki, Grafana's log agregation engine. It has been added to the `workshop-prometheus-grafana/docker-compose.yml`{{open}} file and started as you read this instruction.
@@ -20,17 +22,40 @@ Install Loki Docker logging driver before starting the compose stack
 Set default logger for each container to be our Loki logger.
 `sudo vi /etc/docker/daemon.json`{{execute}}
 
+Little help to use vi editor:
+Switch to insert mode by typing `i`{{execute no-newline}}
+
+Now edit the file
+
+add this code extract:
 ```
-{
-    "debug" : true,
-      ... 
+```{{copy}}
     "log-driver": "loki",
     "log-opts": {
         "loki-url": "http://localhost:3100/loki/api/v1/push",
         "loki-batch-size": "400"
     }
+
+Your file should look **similar** to this at the end:
+
+```
+{
+    "bip":"172.18.0.1/24",
+    "debug": true,
+    "log-driver": "loki",
+    "log-opts": {
+        "loki-url": "http://localhost:3100/loki/api/v1/push",
+        "loki-batch-size": "400"
+    }
+    "storage-driver": "overlay",
+    "registry-mirrors": ["http://docker-registry-mirror.katacoda.com"],
+    "insecure-registries": ["registry.test.training.katacoda.com:4567", "docker-registry-mirror.katacoda.com"]
 }
 ```
+
+Once finished, press ESC ( `^ESC`{{execute ctrl-seq}} ) to switch back to normal mode
+
+To save and exit, type `:wq`{{execute}}
 
 Stop your solution
 `docker-compose down`{{execute}}
