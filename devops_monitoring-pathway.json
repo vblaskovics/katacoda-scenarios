@@ -18,9 +18,14 @@
       "description": "Start with Grafana and preconfigured Prometheus with Loki installed"
     },
     {
-      "course_id": "04-monitoring-ws-observability-correlation",
-      "title": "Correlate Logs/Traces/Metrics",
-      "description": "Correlate logs, traces and metrics with Grafana Prometheus and Tempo/Jaeger"
+      "course_id": "04-monitoring-ws-alerts",
+      "title": "04 Practice Alerts with Grafana",
+      "description": "Send e-mail alerts directly from Grafana"
+    },
+    {
+      "course_id": "05-monitoring-ws-observability-correlation",
+      "title": "05 Correlate Logs/Traces/Metrics",
+      "description": "Correlate logs, traces and metrics with Grafana Prometheus and Grafana Tempo"
     }
   ]
 }
