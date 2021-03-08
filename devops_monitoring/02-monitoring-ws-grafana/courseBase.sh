@@ -1,6 +1,5 @@
 git clone --single-branch --branch step2 https://github.com/tjozsa/workshop-prometheus-grafana.git
-mv -f workshop-prometheus-grafana/prometheus_1.yml workshop-prometheus-grafana/prometheus.yml
-mv -f workshop-prometheus-grafana/docker-compose_1.yml workshop-prometheus-grafana/docker-compose.yml
+
 # cp -rf releasability-book/examples/cd-pipeline/demo-from-zero-to-delivery/docker/* .
 # rm -rf releasability-book
 

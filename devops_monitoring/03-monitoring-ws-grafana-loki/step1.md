@@ -1,3 +1,13 @@
+## Your Prometheus and Grafana environment is starting
+Give it some time to load all the images and start up. It is happening as you read these lines automatically.
+
+You can find grafana on port 3000:
+
+https://[[HOST_SUBDOMAIN]]-3000-[[KATACODA_HOST]].environments.katacoda.com/metrics
+
+
+In this exercise we will also use Loki, Grafana's log agregation engine. It has been added to the `workshop-prometheus-grafana/docker-compose.yml`{{open}} file and started as you read this instruction.
+
 ## Prepare Docker-Compose for logging to Loki
 
 Change directory to 
@@ -22,12 +32,14 @@ Set default logger for each container to be our Loki logger.
 }
 ```
 
+Stop your solution
+`docker-compose down`{{execute}}
+
 Restart docker enavironment
 `systemctl restart docker`{{execute}}
 
 Start Docker-Compose Stack
 `docker-compose up -d`{{execute}}
-
 
 ## Explore the new solution
 Play around with the solution...
@@ -41,7 +53,9 @@ https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/
 
 ### Export Nginx and PostgreSQL metrics
 
-We have added a PostgreSQL and an NGINX simple website to your solution.
+There are two new containers to produce logs for our learning environment. A simple Nginx web server and a PostgreSQL DB.
+
+These are already added to your docker-compose environment. All you need to do is add them to your prometheus monitoring configuration.
 
 ## Configure nginx exporter
 
@@ -99,20 +113,34 @@ https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/targ
 
 Send tens of requests to Nginx on localhost:8080 (200, 404...) and fill PostgreSQL database:
 
-
 ### 2xx
 ```
-./infinite-200-req.sh
+infinite-200-req.sh
 ```{execute}
 
 ### 4xx
 ```
-./infinite-404-req.sh
+infinite-404-req.sh
 ```{{execute}}
 
 ### inserts data into pg
 ```sh
-./infinite-pg-insert.sh
+infinite-pg-insert.sh
+```{{execute}}
+
+### 2xx
+```
+infinite-200-req.sh &
+```{execute}
+
+### 4xx
+```
+infinite-404-req.sh &
+```{{execute}}
+
+### inserts data into pg
+```sh
+infinite-pg-insert.sh &
 ```{{execute}}
 
 ### Import PG dashboards to Grafana

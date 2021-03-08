@@ -1,34 +1,34 @@
 ## Start Prometheus
 
-
 Change directory to 
 `cd workshop-prometheus-grafana`{{execute}}
 
 # Starts Prometheus
 `docker-compose up -d`{{execute}}
 
-## 5 - Setup Grafana
+## Meet Grafana
 
-Uncomment grafana in docker-compose.yml and launch it:
+We have added a new container into the `workshop-prometheus-grafana/docker-compose.yml`{{open}}. Check and discuss the changes.
 
-```
-docker-compose up -d grafana
-```
+You can log into Grafana here:
+https://[[HOST_SUBDOMAIN]]-3000-[[KATACODA_HOST]].environments.katacoda.com/
 
-Open [http://localhost:3000](http://localhost:3000) (user: grep / pass: demo).
+user: **grep** / password: **demo**
+
+Explore Grafana.
 
 Add a new datasource to Grafana.
 
 - Mode: `server`
-- Pointing to http://prometheus:9090
+- Pointing to `http://prometheus:9090`{{copy}}
 
 ![](imgs/grafana-setup-datasource.png)
 
-## 6 - Hand-made dashboard
+## Add a custom dashboard
 
 Add a new dashboard to Grafana.
 
-### 6.0 - Simple graph
+### Simple panel / graph
 
 Create a graph showing current memory usage.
 
@@ -40,7 +40,7 @@ Create a graph showing current memory usage.
   ![](imgs/grafana-new-metric.png)
 </details>
 
-### 6.1 - Some formatting
+### Some formatting
 
 Grafana should be displaying graph in %, such as:
 
@@ -52,7 +52,7 @@ Grafana should be displaying graph in %, such as:
   ![](imgs/grafana-set-unit.png)
 </details>
 
-### 6.2 - CPU load
+### CPU load
 
 In the same dashboard, add a new graph for CPU load (1min, 5min, 15min).
 
@@ -66,7 +66,7 @@ Tips: you will need a new metric prefixed by `node_`.
   ![](imgs/grafana-set-cpu-load-metrics.png)
 </details>
 
-### 6.3 - Disk usage
+### Disk usage
 
 In the same dashboard, add a new graph for `sda` disk usage (ko written per second).
 
@@ -82,7 +82,7 @@ You will need `rate()` PromQL function: [https://prometheus.io/docs/prometheus/l
 
 </details>
 
-## 7 - Dashboards from community
+## Dashboards from community
 
 Let's import a dashboard from Grafana website.
 
