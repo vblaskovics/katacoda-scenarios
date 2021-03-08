@@ -37,30 +37,85 @@ Notice that you have a Loki datasource in Explore view.
 ## Additional documentation:
 https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/
 
-## 8 - Monitor services: nginx, postgresql...
+## Monitor services: nginx, postgresql...
 
-### 8.1 - Export Nginx and PostgreSQL metrics
+### Export Nginx and PostgreSQL metrics
 
 We have added a PostgreSQL and an NGINX simple website to your solution.
 
-### 8.2 - Generate some metrics
+## Configure nginx exporter
+
+You can see that in the `workshop-prometheus-grafana/docker-compose.yml`{{open}} we nave an Nginx web server. We also defined a container that contains a metrix exporter for nginx called nginx-exporter. The exporter exposes nginx metrix on the port 9101
+
+You can check the metrics that is exposed here:
+
+https://[[HOST_SUBDOMAIN]]-9101-[[KATACODA_HOST]].environments.katacoda.com/metrics
+
+Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scrape nginx-exporter metrics every 10 seconds.
+
+<pre class="file" data-filename="workshop-prometheus-grafana/prometheus.yml" data-target="insert"  data-marker="#NGINXEXPORTER">  - job_name: 'node-exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['nginx-exporter:9101']
+</pre>
+
+Restart prometheus service.
+
+```
+docker-compose restart prometheus
+```{{execute}}
+
+Check what prometheus sees as targets:
+
+https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/targets
+
+## Configure postgresql exporter
+
+You can see that in the `workshop-prometheus-grafana/docker-compose.yml`{{open}} we nave an postgresql db. We also defined a container that contains a metrix exporter for postgresql called postgresql-exporter. The exporter exposes nginx metrix on the port 9187
+
+You can check the metrics that is exposed here:
+
+https://[[HOST_SUBDOMAIN]]-9187-[[KATACODA_HOST]].environments.katacoda.com/metrics
+
+Update `workshop-prometheus-grafana/prometheus.yml`{{open}} config file, to scrape postgresql-exporter metrics every 10 seconds.
+
+<pre class="file" data-filename="workshop-prometheus-grafana/prometheus.yml" data-target="insert"  data-marker="#PGSQLEXPORTER">  - job_name: 'node-exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['postgresql-exporter:9187']
+</pre>
+
+Restart prometheus service.
+
+```
+docker-compose restart prometheus
+```{{execute}}
+
+Check what prometheus sees as targets:
+
+https://[[HOST_SUBDOMAIN]]-9090-[[KATACODA_HOST]].environments.katacoda.com/targets
+
+### Generate some metrics
 
 Send tens of requests to Nginx on localhost:8080 (200, 404...) and fill PostgreSQL database:
 
-```sh
-# 2xx
+
+### 2xx
+```
 ./infinite-200-req.sh
+```{execute}
 
-# 4xx
+### 4xx
+```
 ./infinite-404-req.sh
-```
+```{{execute}}
 
+### inserts data into pg
 ```sh
-# inserts data into pg
 ./infinite-pg-insert.sh
-```
+```{{execute}}
 
-### 8.3 - Import PG dashboards to Grafana
+### Import PG dashboards to Grafana
 
 Go on [https://grafana.com/dashboards](https://grafana.com/dashboards) and find a dashboard for PostgreSQL, compatible with Prometheus and wrouesnel/postgres_exporter.
 
@@ -71,7 +126,7 @@ Go on [https://grafana.com/dashboards](https://grafana.com/dashboards) and find 
 
 </details>
 
-### 8.4 - Create Nginx dashboards
+### Create Nginx dashboards
 
 Display 2 graphs:
 
@@ -96,14 +151,14 @@ Tips: you should use `sum by(<label>) (<metric>)` and `irate(<metric>)` (cf Prom
 
 </details>
 
-## 9 - Export some business metrics
+## Export some business metrics
 
 Let's display in real time:
 
 - number of users
 - number of posts per user
 
-### 9.0 - Export data
+### Export data
 
 Grab custom metrics with `postgresql-exporter` by adding queries to `custom-queries.yml`:
 
@@ -159,7 +214,7 @@ post_per_user:
 
 </details>
 
-### 9.1 - Graph time!
+### Graph time!
 
 With `user_count{}` and `post_per_user_count{id,email}` metrics, build following graphs:
 
@@ -191,13 +246,13 @@ Table of top 10 users per post count (`topk()`, `sum by(<label>) (<metric>)`):
 
 </details>
 
-### 9.2 - Expose /metrics from a micro-service
+### Expose /metrics from a micro-service
 
 You can play with this sample in NodeJS: [microservice-demo/README.md](microservice-demo/README.md).
 
 Don't forget to update Prometheus configuration in `prometheus.yml` !
 
-## 42 - More
+## More ideas to exercise
 
 - Monitor a Redis server, a RabbitMQ cluster, Mysql...
 - Increase data retention (15d by default).

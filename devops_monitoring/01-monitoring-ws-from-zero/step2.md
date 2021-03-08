@@ -33,6 +33,10 @@ The `workshop-prometheus-grafana/docker-compose.yml`{{open}} file contains anoth
 docker-compose up -d node-exporter
 ```{{execute}}
 
+```
+docker-compose restart prometheus
+```{{execute}}
+
 Try out the node exporter here:
 
 https://[[HOST_SUBDOMAIN]]-9100-[[KATACODA_HOST]].environments.katacoda.com/metrics

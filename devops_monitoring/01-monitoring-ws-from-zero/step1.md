@@ -14,6 +14,8 @@ That is because we haven't started yet the associated docker containers.
 
 We have prepared and pulled an environment for you. 
 
+Check the `workshop-prometheus-grafana/docker-compose.yml`{{open}} file for more details.
+
 Change to the directory of this envirnment.
 
 ```
