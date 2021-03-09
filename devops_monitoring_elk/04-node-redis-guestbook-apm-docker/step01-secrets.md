@@ -14,7 +14,7 @@ docker run -d \
   --network=course_stack \
   -p 9300:9300 -p 9200:9200 \
   --health-cmd='curl -s -f http://localhost:9200/_cat/health' \
-  docker.elastic.co/elasticsearch/elasticsearch:6.4.0 
+  docker.elastic.co/elasticsearch/elasticsearch:7.11.1 
 `{{execute HOST2}}
 
 ### Check the health / readiness of Elasticsearch
@@ -31,7 +31,7 @@ docker run -d \
   --user=kibana \
   --network=course_stack -p 5601:5601 \
   --health-cmd='curl -s -f http://localhost:5601/login' \
-  docker.elastic.co/kibana/kibana:6.4.0 
+  docker.elastic.co/kibana/kibana:7.11.1 
 `{{execute HOST2}}
 
 ### Check the health / readiness of Kibana
@@ -47,7 +47,7 @@ docker run -d \
 --name=apm-server \
 --network=course_stack \
 -p 8200:8200 \
-docker.elastic.co/apm/apm-server:6.4.0
+docker.elastic.co/apm/apm-server:7.11.1
 `{{execute HOST2}}
 
 ### Run Redis
