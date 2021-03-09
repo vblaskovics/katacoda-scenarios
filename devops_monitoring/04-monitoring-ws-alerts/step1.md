@@ -20,17 +20,17 @@ Send tens of requests to Nginx on localhost:8080 (200, 404...) and fill PostgreS
 
 ### 2xx
 ```
-infinite-200-req.sh
+./infinite-200-req.sh
 ```{{execute}}
 
 ### 4xx
 ```
-infinite-404-req.sh
+./infinite-404-req.sh
 ```{{execute}}
 
 ### inserts data into pg
 ```sh
-infinite-pg-insert.sh
+./infinite-pg-insert.sh
 ```{{execute}}
 
 ### Import PG dashboards to Grafana

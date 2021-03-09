@@ -80,3 +80,40 @@ At the top of the terminal you will see an NGINX tab.  Click on that and you wil
 
 ### Interact with your data in the Kibana dashboard
 At the top of the terminal you will see a Kibana tab.  Click on that and you will see the default Kibana page. Open the **Dashboards** app in the left navigation of Kibana and search for nginx, click on the Filebeat NGINX overview.
+
+
+## Metrics with metricbeat
+If you want to get some metrics into kibana from this sandbox, I suggest using metricbeat and read Docker metrics.
+
+Create new index `metricbeat-*` in elastic search.
+
+```
+docker run \
+--net course_stack \
+docker.elastic.co/beats/metricbeat:7.11.1 \
+setup -E setup.kibana.host=kibana:5601 \
+-E output.elasticsearch.hosts=["elasticsearch:9200"]
+```{{execute}}
+
+You need to configure metricbeats.
+
+Get example configuration here: 
+
+`curl -L -O https://raw.githubusercontent.com/elastic/beats/7.11/deploy/docker/metricbeat.docker.yml`{{execute}}
+
+
+Start collecting metrics from docker runtime with metricbeats container:
+
+```
+docker run -d \
+  --name=metricbeat \
+  --net course_stack \
+  --user=root \
+  --volume="$(pwd)/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro" \
+  --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
+  --volume="/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro" \
+  --volume="/proc:/hostfs/proc:ro" \
+  --volume="/:/hostfs:ro" \
+  docker.elastic.co/beats/metricbeat:7.11.1 metricbeat -e \
+  -E output.elasticsearch.hosts=["elasticsearch:9200"]
+```{{execute}}
