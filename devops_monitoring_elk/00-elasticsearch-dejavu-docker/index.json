@@ -5,13 +5,12 @@
   "time": "20-25 minutes",
   "details": {
     "intro": {
-      "courseData": "courseBase.sh",
       "text": "intro.md",
       "credits": "Tamas Jozsa, https://github.com/samber/workshop-prometheus-grafana"
     },
     "steps": [
       {
-        "title": "Check nothing is running",
+        "title": "Start things!",
         "text": "step1.md"
       },
       {
@@ -21,6 +20,14 @@
     ],
     "finish": {
       "text": "finish.md"
+    },
+    "assets": {
+      "host01": [
+        {
+          "file": "*",
+          "target": "/root"
+        }
+      ]
     }
   },
   "files": [],
