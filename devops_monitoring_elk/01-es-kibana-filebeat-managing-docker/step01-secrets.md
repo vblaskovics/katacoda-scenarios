@@ -6,7 +6,7 @@ Create a network shared between the app and the Elastic Stack:
 
 ### Deploy Elasticsearch 
 
-This docker run command deploys a development Elasticsearch instance.  You can read more at https://www.elastic.co/guide/en/elasticsearch/reference/6.4/docker.html
+This docker run command deploys a development Elasticsearch instance.  You can read more at https://www.elastic.co/guide/en/elasticsearch/reference/7.x/docker.html
 
 `
 docker run -d \
@@ -16,7 +16,7 @@ docker run -d \
   --network=course_stack \
   -p 9300:9300 -p 9200:9200 \
   --health-cmd='curl -s -f http://localhost:9200/_cat/health' \
-  docker.elastic.co/elasticsearch/elasticsearch:6.4.0 
+  docker.elastic.co/elasticsearch/elasticsearch:latest
 `{{execute HOST1}}
 
 ### Check the health / readiness of Elasticsearch
@@ -35,7 +35,7 @@ docker run -d \
   --user=kibana \
   --network=course_stack -p 5601:5601 \
   --health-cmd='curl -s -f http://localhost:5601/login' \
-  docker.elastic.co/kibana/kibana:6.4.0 
+  docker.elastic.co/kibana/kibana:latest
 `{{execute HOST1}}
 
 ### Check the health / readiness of Kibana
@@ -59,7 +59,7 @@ And now start Filebeat:
 --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
 --volume="/root/course/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro" \
 --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
-docker.elastic.co/beats/filebeat:6.4.0 filebeat -e -strict.perms=false`{{execute HOST1}}
+docker.elastic.co/beats/filebeat:latest filebeat -e -strict.perms=false`{{execute HOST1}}
 
 ### Start NGINX
 `docker run -d \
