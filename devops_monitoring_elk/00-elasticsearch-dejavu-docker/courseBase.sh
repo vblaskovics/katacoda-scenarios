@@ -1,0 +1,1 @@
+cp docker-compose.yml /root

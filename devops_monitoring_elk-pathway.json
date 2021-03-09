@@ -3,6 +3,11 @@
   "description": "DevOps Monitoring ELK sandboxes",
   "courses": [
     {
+      "course_id": "00-elasticsearch-dejavu-docker",
+      "title": "00 Start here. Understand Elasticsearch.",
+      "description": "00 Start here. Understand Elasticsearch."
+    },
+    {
       "course_id": "01-es-kibana-filebeat-managing-docker",
       "title": "01 Elastcisearch Kibana and Filebeat for logs and metrics monitoring.",
       "description": "Elastcisearch Kibana and Filebeat for logs and metrics monitoring."
