@@ -1,0 +1,45 @@
+{
+  "pathwayTitle": "Getting stared with Monitoring",
+  "title": "From Zero",
+  "description": "See how to launch a fully running monitoring system from zero",
+  "time": "20-25 minutes",
+  "details": {
+    "intro": {
+      "courseData": "courseBase.sh",
+      "text": "intro.md",
+      "credits": "Tamas Jozsa, https://github.com/samber/workshop-prometheus-grafana"
+    },
+    "steps": [
+      {
+        "title": "Check nothing is running",
+        "text": "step1.md"
+      },
+      {
+        "title": "Start Prometheus and grab some metrics",
+        "text": "step2.md"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "files": [],
+  "environment": {
+    "showdashboard": true,
+    "dashboards": [
+      {
+        "name": "Kibana",
+        "port": 5601
+      },
+      {
+        "name": "Elastic Search",
+        "port": 9200
+      }
+    ],
+    "uilayout": "editor-terminal",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}

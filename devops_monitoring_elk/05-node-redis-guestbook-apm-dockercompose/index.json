@@ -1,0 +1,33 @@
+{
+  "title": "Elastic APM managing a Node.js app with a Redis backend",
+  "description": "foo",
+  "details": {
+    "steps": [
+      {
+        "text": "step01-secrets.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "colordiff.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    },
+    "assets": {
+      "host01": [
+        {
+          "file": "filebeat.yml",
+          "target": "/root/course"
+        }
+      ]
+    }
+  },
+  "environment": {
+    "uilayout": "terminal-terminal",
+    "uieditorpath": "/root/course"
+  },
+  "backend": {
+    "imageid": "kubernetes-cluster-running"
+  }
+}

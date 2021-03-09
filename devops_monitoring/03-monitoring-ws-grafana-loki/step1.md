@@ -223,8 +223,11 @@ Heatmap of signups (`increase(<metric>)`):
 
 ```
 docker-compose exec grafana grafana-cli plugins install petrslavotinek-carpetplot-panel
-docker-compose restart grafana
+```{{execute}}
+
 ```
+docker-compose restart grafana
+```{{execute}}
 
 ![](assets/grafana-heatmap-signups.png)
 

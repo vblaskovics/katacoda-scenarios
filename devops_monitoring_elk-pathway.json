@@ -3,9 +3,29 @@
   "description": "DevOps Monitoring ELK sandboxes",
   "courses": [
     {
-      "course_id": "01-getting-started-with-elk",
-      "title": "01 Gettin Started with ELK stack",
-      "description": "Learn various components of ELK stack."
+      "course_id": "01-es-kibana-filebeat-managing-docker",
+      "title": "Elastcisearch Kibana and Filebeat for logs and metrics monitoring.",
+      "description": "Elastcisearch Kibana and Filebeat for logs and metrics monitoring."
+    },
+    {
+      "course_id": "02-es-kibana-filebeat-managing-dockercompose",
+      "title": "Same as 01 but with docker compose",
+      "description": "Same as 01 but with docker compose"
+    },
+    {
+      "course_id": "03-full-elk-dockercompose",
+      "title": "Elasticsearch Logstash Kibana sandbox with dockercompose.",
+      "description": "Elasticsearch Logstash Kibana sandbox with dockercompose."
+    },
+    {
+      "course_id": "04-node-redis-guestbook-apm-docker",
+      "title": "Elastcisearch Kibana with APM for trace handling.",
+      "description": "Elastcisearch Kibana with APM for trace handling."
+    },
+    {
+      "course_id": "05-node-redis-guestbook-apm-dockercompose",
+      "title": "Same as 04 but with docker compose",
+      "description": "Same as 04 but with docker compose."
     }
   ]
 }

@@ -1,0 +1,14 @@
+
+git clone https://github.com/evbogue/node-redis-guestbook.git
+cd node-redis-guestbook/
+npm install
+docker run --name some-redis -d -p 6379:6379 redis
+
+vi server.js 
+#add the require lines for elastic-apm
+
+docker build -t danroscigno/node-guestbook .
+
+docker run -p 8080:8080  --link some-redis:redis -d danroscigno/node-guestbook
+docker ps -l
+docker logs jolly_shockley

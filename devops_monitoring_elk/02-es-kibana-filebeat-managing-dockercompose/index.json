@@ -1,0 +1,38 @@
+{
+  "title": "Deploy Elasticsearch, Kibana, and Filebeat in Docker containers",
+  "description": "Collection of logs and metrics is automated using Docker labels to provide hints to Elastic Beats.  Beats modules provide collection, parsing, and visualization configuration to the Elastic Stack",
+  "details": {
+    "steps": [
+      {
+        "text": "step01-secrets.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "colordiff.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    },
+    "assets": {
+      "host01": [
+        {
+          "file": "*",
+          "target": "/root/course"
+        }
+      ]
+    }
+  },
+  "environment": {
+    "uilayout": "terminal",
+    "uieditorpath": "/root/course",
+    "showdashboard": true,
+    "dashboards": [
+      { "name": "NGINX", "port": 81 },
+      { "name": "Kibana", "port": 5601 }
+    ]
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}
