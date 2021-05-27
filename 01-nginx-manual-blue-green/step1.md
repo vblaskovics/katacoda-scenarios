@@ -1,6 +1,10 @@
 ## docker-blue-green-deployment
 Example of blue-green deployment with docker-compose
 
+```
+cd docker-blue-green-deployment
+```{{execute}}
+
 ### Let's setup first our baseline relese (GREEN)
 ```
  ./setup.sh
