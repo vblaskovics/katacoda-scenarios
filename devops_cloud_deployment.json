@@ -4,7 +4,7 @@
   "courses": [
     {
       "course_id": "01-nginx-manual-blue-green",
-      "title": "01 Manual Blue Green with Nginx and Docker-Compose",
+      "title": "01 Manual Blue Green",
       "description": "Start withouot anything."
     }
   ]

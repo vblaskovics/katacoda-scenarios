@@ -1,5 +1,5 @@
 {
-  "pathwayTitle": "Getting stared with Monitoring in Prometheus",
+  "pathwayTitle": "Basic Blue Green deployment with Nginx and Docker-Compose",
   "title": "Prometheus: Getting Started",
   "description": "See how to launch a fully running pull monitoring system with Prometheus",
   "time": "20-25 minutes",
