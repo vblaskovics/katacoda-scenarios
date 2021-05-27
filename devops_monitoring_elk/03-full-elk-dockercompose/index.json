@@ -13,10 +13,6 @@
       {
         "title": "Check nothing is running",
         "text": "step1.md"
-      },
-      {
-        "title": "Start Prometheus and grab some metrics",
-        "text": "step2.md"
       }
     ],
     "finish": {
