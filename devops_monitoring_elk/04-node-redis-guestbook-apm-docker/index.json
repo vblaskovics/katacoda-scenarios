@@ -23,6 +23,9 @@
       ]
     }
   },
+  "environment": {
+
+  },
   "backend": {
     "imageid": "kubernetes-cluster-running"
   }
