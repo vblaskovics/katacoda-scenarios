@@ -24,7 +24,7 @@
     "showdashboard": true,
     "dashboards": [
       {
-        "name": "Hot R.O.D. app",
+        "name": "Tomcat App",
         "port": 8080
       },
       {
