@@ -1,7 +1,7 @@
 {
   "pathwayTitle": "Basic Blue Green deployment with Nginx and Docker-Compose",
-  "title": "Prometheus: Getting Started",
-  "description": "See how to launch a fully running pull monitoring system with Prometheus",
+  "title": "Manual Blue Green deployment ",
+  "description": "Blue Green deployment with only Nginx and docker-compose",
   "time": "20-25 minutes",
   "details": {
     "intro": {
