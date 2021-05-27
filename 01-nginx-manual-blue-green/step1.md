@@ -2,15 +2,13 @@
 Example of blue-green deployment with docker-compose
 
 
-
-
 ```
 cd docker-blue-green-deployment
 ```{{execute}}
 
-`docker-compose.yml`{{open}}
+`/root/docker-blue-green-deployment/docker-compose.yml`{{open}}
 
-`setup.sh`{{open}}
+`/root/docker-blue-green-deployment/setup.sh`{{open}}
 
 
 ### Let's setup first our baseline relese (GREEN)
@@ -29,7 +27,7 @@ Should output
 
 ### Let's deploy the next version (BLUE)
 
-`switch.sh`{{open}}
+`/root/docker-blue-green-deployment/switch.sh`{{open}}
 
 ```
 ./switch.sh
