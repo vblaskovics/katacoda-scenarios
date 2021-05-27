@@ -1,0 +1,30 @@
+{
+  "pathwayTitle": "Getting stared with Monitoring in Prometheus",
+  "title": "Prometheus: Getting Started",
+  "description": "See how to launch a fully running pull monitoring system with Prometheus",
+  "time": "20-25 minutes",
+  "details": {
+    "intro": {
+      "courseData": "courseBase.sh",
+      "text": "intro.md",
+      "credits": "Tamas Jozsa, https://github.com/samber/workshop-prometheus-grafana"
+    },
+    "steps": [
+      {
+        "title": "Start here",
+        "text": "step1.md"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "files": [],
+  "environment": {    
+    "uilayout": "editor-terminal",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}
