@@ -6,11 +6,11 @@
 
 `cd tempo-springboot-example`{{execute}}
 
-`docker-compose -f stack.yaml up -d`{{execute}}
+`docker-compose -f stack.yml up -d`{{execute}}
 
 ## Check to see if all components started
 
-`docker-compose -f stack.yaml ps`{{execute}}
+`docker-compose -f stack.yml ps`{{execute}}
 
 You should see similar output:
 ```bash
