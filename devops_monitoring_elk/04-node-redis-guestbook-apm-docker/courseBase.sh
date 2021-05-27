@@ -1,6 +1,6 @@
 git clone https://github.com/tjozsa/node-guestbook-apm
 cd node-guestbook-apm
-docker build -t tjozsa/node-guestbook .
+# docker build -t tjozsa/node-guestbook .
 # cd workshop-prometheus-grafana
 # cp -rf ../assets/prometheus.yml .
 # rm -rf releasability-book

@@ -69,7 +69,7 @@ docker run \
   --name guestbook \
   -p 8080:8080  \
   --network=course_stack \
-  -d danroscigno/node-guestbook
+  -d tjozsa/node-guestbook
 `{{execute HOST2}}
 
 ### Generate some traffic through the Guestbook
