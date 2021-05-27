@@ -2,7 +2,7 @@
 
 Create a network shared between the app and the Elastic Stack:
 
-`docker network create course_stack`{{execute HOST2}}
+`docker network create course_stack`{{execute}}
 
 ### Deploy Elasticsearch 
 
