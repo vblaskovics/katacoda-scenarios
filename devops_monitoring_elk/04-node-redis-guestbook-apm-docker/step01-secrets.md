@@ -15,7 +15,7 @@ docker run -d \
   -p 9300:9300 -p 9200:9200 \
   --health-cmd='curl -s -f http://localhost:9200/_cat/health' \
   docker.elastic.co/elasticsearch/elasticsearch:7.11.1 
-`{{execute HOST2}}
+`{{execute}}
 
 ### Check the health / readiness of Elasticsearch
 
@@ -32,7 +32,7 @@ docker run -d \
   --network=course_stack -p 5601:5601 \
   --health-cmd='curl -s -f http://localhost:5601/login' \
   docker.elastic.co/kibana/kibana:7.11.1 
-`{{execute HOST2}}
+`{{execute}}
 
 ### Check the health / readiness of Kibana
 
@@ -48,7 +48,7 @@ docker run -d \
 --network=course_stack \
 -p 8200:8200 \
 docker.elastic.co/apm/apm-server:7.11.1
-`{{execute HOST2}}
+`{{execute}}
 
 ### Run Redis
 
@@ -60,9 +60,15 @@ docker run \
   --label=co.elastic.logs/fileset.stdout=log \
   --label=co.elastic.metrics/module=redis \
   -d -p 6379:6379 redis
-`{{execute HOST2}}
+`{{execute}}
 
 ### Run the node-guestbook
+
+Before running the guestbook demo app we need to build a Docker image.
+
+```
+docker build -t tjozsa/node-guestbook .
+```{{execute}}
 
 `
 docker run \
@@ -70,7 +76,7 @@ docker run \
   -p 8080:8080  \
   --network=course_stack \
   -d tjozsa/node-guestbook
-`{{execute HOST2}}
+`{{execute}}
 
 ### Generate some traffic through the Guestbook
 Open the Guestbook and add some entries:
