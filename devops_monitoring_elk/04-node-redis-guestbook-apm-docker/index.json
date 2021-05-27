@@ -23,10 +23,6 @@
       ]
     }
   },
-  "environment": {
-    "uilayout": "terminal-terminal",
-    "uieditorpath": "/root/course"
-  },
   "backend": {
     "imageid": "kubernetes-cluster-running"
   }
