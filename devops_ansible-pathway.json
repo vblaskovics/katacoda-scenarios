@@ -2,6 +2,10 @@
   "title": "DevOps ansible sandboxes",
   "description": "DevOps ansible sandboxes",
   "courses": [
+    { "course_id": "ansible-bootstrap",
+      "title":"Bootstrap ansible node",
+      "description":"How to prepare a node to be managed by ansible"
+    },
     {
       "course_id": "ansible-101",
       "title": "ansible-101",
