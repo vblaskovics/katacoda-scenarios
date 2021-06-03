@@ -46,8 +46,8 @@ fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
-# 172.18.0.2    salt
-172.19.0.2      salt
+172.18.0.2    salt
+#172.19.0.2      salt
 ```
 Now we need to start the salt server in daemon mode:
 
@@ -102,17 +102,57 @@ Key for minion salt accepted.
 
 `docker exec -it --user centos target1 /bin/bash`{{execute}}
 
-...
+## Install Salt Minion
+`sudo apt-get install -y salt-minion`{{execute}}
+
+## Install SSH package
+`sudo apt-get install -y salt-ssh`{{execute}}
+
+Now we can start the salt minion in daemon mode:
+
+`sudo salt-minion -d`{{execute}}
 
 `exit`{{execute}}
 
-`docker exec -it --user centos target1 /bin/bash`{{execute}}
+## Let's go back to salt master and approve the minion
 
-...
+Don't forget to uncomment the ip of target 1 in the  hosts file
 
-`exit`{{execute}}
+```
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.18.0.2    salt
+#172.19.0.2      salt
+```
 
 `docker exec -it --user centos salt /bin/bash`{{execute}}
+
+Salt server needs to approve the minion's key in order to start the communication
+
+`sudo salt-key`{{execute}}
+
+```
+centos@salt:/$ sudo salt-key
+Accepted Keys:
+Denied Keys:
+Unaccepted Keys:
+salt
+Rejected Keys:
+````
+
+`sudo salt-key -A`{{execute}}
+
+```
+The following keys are going to be accepted:
+Unaccepted Keys:
+salt
+Proceed? [n/Y] y
+Key for minion salt accepted.
+```
 
 
 `sudo salt '*' test.version`{{execute}}
